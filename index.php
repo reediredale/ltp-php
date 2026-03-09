@@ -70,41 +70,6 @@ if ($request_uri === '/sitemap.xml') {
     exit;
 }
 
-// Database initialization function
-function initDatabase() {
-    $dataDir = __DIR__ . '/data';
-    $dbPath = $dataDir . '/submissions.db';
-
-    // Create data directory if it doesn't exist
-    if (!is_dir($dataDir)) {
-        mkdir($dataDir, 0755, true);
-    }
-
-    try {
-        $db = new PDO('sqlite:' . $dbPath);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Create submissions table if it doesn't exist
-        $db->exec("
-            CREATE TABLE IF NOT EXISTS submissions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                phone TEXT,
-                message TEXT NOT NULL,
-                ip_address TEXT,
-                user_agent TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        ");
-
-        return $db;
-    } catch (PDOException $e) {
-        error_log('Database initialization error: ' . $e->getMessage());
-        throw $e;
-    }
-}
-
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
     $name = $_POST['name'] ?? '';
@@ -123,29 +88,30 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
         exit;
     }
 
-    // Save to database
-    try {
-        $db = initDatabase();
+    // Prepare email
+    $to = 'reed@reediredale.com';
+    $subject = 'New Contact Form Submission - Leads to Profit';
 
-        $stmt = $db->prepare("
-            INSERT INTO submissions (name, email, phone, message, ip_address, user_agent)
-            VALUES (:name, :email, :phone, :message, :ip_address, :user_agent)
-        ");
+    $emailBody = "New contact form submission from Leads to Profit website\n\n";
+    $emailBody .= "Name: " . $name . "\n";
+    $emailBody .= "Email: " . $email . "\n";
+    $emailBody .= "Phone: " . ($phone ?: 'Not provided') . "\n\n";
+    $emailBody .= "Message:\n" . $message . "\n\n";
+    $emailBody .= "---\n";
+    $emailBody .= "Submitted: " . date('Y-m-d H:i:s') . "\n";
+    $emailBody .= "IP Address: " . ($_SERVER['REMOTE_ADDR'] ?? 'Unknown') . "\n";
 
-        $stmt->execute([
-            ':name' => $name,
-            ':email' => $email,
-            ':phone' => $phone,
-            ':message' => $message,
-            ':ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
-            ':user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null
-        ]);
+    // Email headers
+    $headers = "From: noreply@leadstoprofit.com\r\n";
+    $headers .= "Reply-To: " . $email . "\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
 
-        // Redirect to thank you page
+    // Send email
+    if (mail($to, $subject, $emailBody, $headers)) {
         header('Location: /thank-you');
         exit;
-    } catch (PDOException $e) {
-        error_log('Form submission error: ' . $e->getMessage());
+    } else {
+        error_log('Failed to send contact form email');
         header('Location: /contact?error=server');
         exit;
     }
