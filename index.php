@@ -1,6 +1,12 @@
 <?php
-// Start session for CSRF protection
+// Configure session settings before starting
 if (session_status() === PHP_SESSION_NONE) {
+    // Set session cookie parameters for better compatibility
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_strict_mode', 1);
+    ini_set('session.cookie_samesite', 'Lax');
+
+    // Start session
     session_start();
 }
 
@@ -82,12 +88,21 @@ if ($request_uri === '/sitemap.xml') {
 
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
-    // CSRF Protection
-    if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) ||
-        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    // CSRF Protection - verify token
+    $csrf_valid = false;
+    if (isset($_POST['csrf_token']) && isset($_SESSION['csrf_token'])) {
+        $csrf_valid = hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+    }
+
+    if (!$csrf_valid) {
+        // Log for debugging
+        error_log("CSRF validation failed - POST token: " . (isset($_POST['csrf_token']) ? 'set' : 'missing') .
+                  ", SESSION token: " . (isset($_SESSION['csrf_token']) ? 'set' : 'missing'));
+        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_token');
         exit;
     }
+
 
     // Honeypot check (bot protection)
     if (!empty($_POST['website'])) {
