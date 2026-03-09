@@ -1,0 +1,110 @@
+================================================================================
+PRODUCTION FIX - CONTACT FORM
+================================================================================
+
+Your form works locally but not on production. I've added diagnostic tools.
+
+================================================================================
+STEP 1: UPLOAD THESE 4 FILES
+================================================================================
+
+[ ] index.php
+[ ] submit.php (UPDATED - better error logging)
+[ ] init_db.php (UPDATED - better error messages)
+[ ] diagnose.php (NEW - shows exactly what's wrong)
+
+================================================================================
+STEP 2: RUN DIAGNOSTICS
+================================================================================
+
+Go to: https://leadstoprofit.com.au/diagnose.php
+
+This will show you:
+✅ What's working
+❌ What's broken
+🔧 How to fix it
+
+================================================================================
+STEP 3: FIX BASED ON DIAGNOSTIC RESULTS
+================================================================================
+
+PROBLEM: "Data directory missing"
+FIX: Go to https://leadstoprofit.com.au/init_db.php
+
+PROBLEM: "Database file not writable"
+FIX: SSH into server and run:
+     chmod 755 data
+     chmod 644 data/submissions.db
+
+PROBLEM: "PDO SQLite not installed"
+FIX: Contact your hosting provider to enable SQLite
+
+PROBLEM: "Table does not exist"
+FIX: Go to https://leadstoprofit.com.au/init_db.php
+
+================================================================================
+STEP 4: TEST THE FORM
+================================================================================
+
+After fixing, test with the form on diagnose.php page
+
+Then test the real form at: /contact
+
+================================================================================
+WHAT I IMPROVED
+================================================================================
+
+✅ init_db.php now shows detailed success/error messages
+✅ submit.php has extensive error logging
+✅ diagnose.php shows system status in real-time
+✅ Better permission checks
+✅ Clear error messages
+
+================================================================================
+MOST LIKELY ISSUES ON PRODUCTION
+================================================================================
+
+1. PERMISSIONS - Most common issue
+   - Data directory not writable
+   - Database file not writable
+   - Solution: chmod 755 data && chmod 644 data/submissions.db
+
+2. DATABASE NOT CREATED
+   - init_db.php didn't complete successfully
+   - Solution: Re-run init_db.php and check for errors
+
+3. PATH ISSUES
+   - Different file paths between local and production
+   - diagnose.php will show the exact paths
+
+4. PDO SQLITE MISSING
+   - Hosting doesn't have SQLite enabled
+   - Check with your host
+
+================================================================================
+HOW TO DEBUG
+================================================================================
+
+1. Go to diagnose.php - See all checks
+2. If errors, follow the fix suggestions
+3. Check your server error logs for detailed messages
+4. All errors now logged with emojis (✅ ❌ ⚠️) for easy reading
+
+================================================================================
+AFTER IT WORKS
+================================================================================
+
+1. Delete diagnose.php (not needed)
+2. Delete init_db.php (already ran)
+3. Keep submit.php and index.php
+4. View submissions in phpliteadmin.php
+
+================================================================================
+GUARANTEED FIX
+================================================================================
+
+The diagnose.php page will tell you EXACTLY what's wrong.
+
+Upload the 4 files → Go to diagnose.php → Follow the instructions
+
+================================================================================
