@@ -1,0 +1,31 @@
+Lead ID,Name,Company,Service Interest,Pipeline Stage,Days in Stage,Deal Value,Win Probability,Expected Close Date,Last Activity,Next Steps,Contact Email,Phone
+1,John Smith,Smith E-commerce,"Meta Ads, Google Ads",Proposal Sent,3,"$5,000",60%,2026-03-14,Sent proposal on Monday,Follow up on proposal - call Tuesday,john@example.com,555-0123
+2,Sarah Johnson,TechStart SaaS,Lead Generation,Negotiation,5,"$8,000",80%,2026-03-12,Discussed pricing yesterday,Send final contract today,sarah@company.com,555-0456
+3,Mike Davis,Davis Consulting,CRO,Discovery,2,"$3,000",30%,2026-03-21,Left voicemail,Schedule audit call,mike@business.com,
+4,Lisa Chen,Chen Marketing,Email Marketing,Qualified,1,"$4,500",40%,2026-03-17,Needs assessment call,Send case studies and pricing,lisa@startup.com,555-0789
+5,Tom Wilson,Wilson Corp,"Strategy, CRO",Qualified,4,"$10,000",50%,2026-03-15,Discovery call completed,Send proposal this week,tom@corp.com,555-0234
+6,Emma Brown,Emma's Shop,Meta Ads,Proposal Sent,2,"$6,500",70%,2026-03-14,Sent detailed proposal,Follow up Friday,emma@shop.com,555-0567
+10,Anna White,White Retail,"Meta Ads, CRO",Negotiation,4,"$9,500",85%,2026-03-13,Price negotiation ongoing,Send final offer today,anna@retail.com,555-0678
+,,,,,,,,,,,,
+PIPELINE STAGES:,,,,,,,,,,,,
+Discovery,"Initial contact, understanding needs",,,,,,,,,,,
+Qualified,"Budget confirmed, decision maker identified",,,,,,,,,,,
+Proposal Sent,"Detailed proposal with pricing sent",,,,,,,,,,,
+Negotiation,"Price or terms negotiation",,,,,,,,,,,
+Won,"Contract signed, deal closed",,,,,,,,,,,
+Lost,"Opportunity lost",,,,,,,,,,,
+,,,,,,,,,,,,
+WIN PROBABILITY BY STAGE:,,,,,,,,,,,,
+Discovery,20-30%,,,,,,,,,,,
+Qualified,40-50%,,,,,,,,,,,
+Proposal Sent,60-70%,,,,,,,,,,,
+Negotiation,75-85%,,,,,,,,,,,
+,,,,,,,,,,,,
+TOTAL PIPELINE VALUE:,"$46,500",,,,,,,,,,,
+WEIGHTED PIPELINE VALUE (by probability):,"$29,050",,,,,,,,,,,
+,,,,,,,,,,,,
+ACTIONS:,,,,,,,,,,,,
+✓ Move deals forward every 3-5 days,,,,,,,,,,,,
+✓ If stuck in stage 7+ days - take action,,,,,,,,,,,,
+✓ Review pipeline every Monday morning,,,,,,,,,,,,
+✓ Follow up on all proposals within 48 hours,,,,,,,,,,,,

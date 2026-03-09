@@ -1,0 +1,18 @@
+Lead ID,Date Submitted,Name,Email,Phone,Service Interest,Lead Source,Lead Status,Lead Score (0-100),First Contact Date,Response Time (hrs),Last Follow-Up Date,Next Follow-Up Date,Estimated Value,Assigned To,Priority,Notes,Outcome
+1,2026-03-07,John Smith,john@example.com,555-0123,"Meta Ads, Google Ads",Website Form,Contacted,85,2026-03-07,2,2026-03-07,2026-03-09,"$5,000",Your Name,High,Interested in scaling e-commerce store. Very responsive.,
+2,2026-03-07,Sarah Johnson,sarah@company.com,555-0456,Lead Generation,Referral,Qualified,90,2026-03-07,1,2026-03-07,2026-03-08,"$8,000",Your Name,High,B2B SaaS company. Budget approved. Ready to start.,
+3,2026-03-06,Mike Davis,mike@business.com,,CRO,Website Form,New,65,,,,,2026-03-07,,Medium,Left voicemail. Awaiting callback.,
+4,2026-03-06,Lisa Chen,lisa@startup.com,555-0789,Email Marketing,LinkedIn,Contacted,75,2026-03-06,4,2026-03-07,2026-03-10,"$4,500",Your Name,Medium,E-commerce business. Wants to see case studies.,
+5,2026-03-05,Tom Wilson,tom@corp.com,555-0234,"Strategy, CRO",Cold Outreach,Qualified,80,2026-03-05,12,2026-03-06,2026-03-08,"$10,000",Your Name,High,Enterprise client. Multiple stakeholders. Long sales cycle.,
+6,2026-03-05,Emma Brown,emma@shop.com,555-0567,Meta Ads,Website Form,Proposal Sent,88,2026-03-05,3,2026-03-07,2026-03-09,"$6,500",Your Name,High,Sent proposal yesterday. Very interested. Follow up Friday.,
+7,2026-03-04,David Lee,david@business.net,,Google Ads,Networking Event,New,60,,,,,2026-03-07,,Low,Met at conference. Email sent. No response yet.,
+8,2026-03-04,Rachel Green,rachel@ecom.com,555-0890,"Lead Gen, Email",Referral,Won,95,2026-03-04,1,2026-03-06,,"$7,200",Your Name,High,Signed contract! Start date: March 15th.,Won
+9,2026-03-03,Chris Martin,chris@consulting.com,555-0345,Strategy,Website Form,Lost,70,2026-03-03,2,2026-03-05,,,"$12,000",Your Name,Medium,Budget constraints. Will revisit in Q3.,Lost
+10,2026-03-03,Anna White,anna@retail.com,555-0678,"Meta Ads, CRO",LinkedIn,Negotiation,92,2026-03-03,1,2026-03-07,2026-03-08,"$9,500",Your Name,High,Price negotiation. Very close to closing. Send final proposal.,
+,,,,,,,,,,,,,,,,,,
+INSTRUCTIONS:,,,,,,,,,,,,,,,,,,
+"Lead Status Options: New, Contacted, Qualified, Proposal Sent, Negotiation, Won, Lost",,,,,,,,,,,,,,,,,,
+"Service Options: Lead Generation, Meta Ads, Google Ads, CRO, Email Marketing, Strategy & Consulting",,,,,,,,,,,,,,,,,,
+"Lead Sources: Website Form, Referral, LinkedIn, Cold Outreach, Networking Event, Social Media, Other",,,,,,,,,,,,,,,,,,
+"Priority Levels: High (80+ score), Medium (60-79 score), Low (below 60)",,,,,,,,,,,,,,,,,,
+"Best Practice: Contact new leads within 2 hours for 3x better conversion!",,,,,,,,,,,,,,,,,,

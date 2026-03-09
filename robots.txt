@@ -1,0 +1,10 @@
+# robots.txt for Leads to Profit
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: http://ltp.test/sitemap.xml
+
+# Crawl-delay (optional, adjust as needed)
+Crawl-delay: 1

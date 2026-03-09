@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

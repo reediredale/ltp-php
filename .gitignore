@@ -1,0 +1,10 @@
+# Database
+/data/
+*.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
