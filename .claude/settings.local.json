@@ -3,7 +3,8 @@
     "allow": [
       "Bash(php:*)",
       "WebSearch",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "WebFetch(domain:leadstoprofit.com.au)"
     ],
     "deny": [],
     "ask": []
