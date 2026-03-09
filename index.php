@@ -1304,10 +1304,16 @@ $content = ob_get_clean();
 
                 const formData = new FormData(contactForm);
 
+                // Convert FormData to URLSearchParams for proper PHP $_POST handling
+                const params = new URLSearchParams(formData);
+
                 try {
                     const response = await fetch('/contact', {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params
                     });
 
                     const data = await response.json();
