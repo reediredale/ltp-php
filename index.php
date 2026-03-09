@@ -1,20 +1,4 @@
 <?php
-// Configure session settings before starting
-if (session_status() === PHP_SESSION_NONE) {
-    // Set session cookie parameters for better compatibility
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_strict_mode', 1);
-    ini_set('session.cookie_samesite', 'Lax');
-
-    // Start session
-    session_start();
-}
-
-// Generate CSRF token if it doesn't exist
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 // Configuration
 define('SITE_URL', 'http://ltp.test');
 define('SITE_NAME', 'Leads to Profit');
@@ -88,22 +72,6 @@ if ($request_uri === '/sitemap.xml') {
 
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
-    // CSRF Protection - verify token
-    $csrf_valid = false;
-    if (isset($_POST['csrf_token']) && isset($_SESSION['csrf_token'])) {
-        $csrf_valid = hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
-    }
-
-    if (!$csrf_valid) {
-        // Log for debugging
-        error_log("CSRF validation failed - POST token: " . (isset($_POST['csrf_token']) ? 'set' : 'missing') .
-                  ", SESSION token: " . (isset($_SESSION['csrf_token']) ? 'set' : 'missing'));
-        $_SESSION['form_data'] = $_POST;
-        header('Location: /contact?error=invalid_token');
-        exit;
-    }
-
-
     // Honeypot check (bot protection)
     if (!empty($_POST['website'])) {
         // Bot detected, silently redirect to thank you page
@@ -119,35 +87,30 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Basic validation
     if (empty($name) || empty($email) || empty($message)) {
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=missing');
         exit;
     }
 
     // Validate name length
     if (strlen($name) < 2 || strlen($name) > 100) {
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_name');
         exit;
     }
 
     // Email validation
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_email');
         exit;
     }
 
     // Phone validation (if provided)
     if (!empty($phone) && !preg_match('/^[\d\s\-\+\(\)]{7,20}$/', $phone)) {
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_phone');
         exit;
     }
 
     // Message length validation
     if (strlen($message) < 10 || strlen($message) > 5000) {
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_message');
         exit;
     }
@@ -172,15 +135,10 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Send email
     if (mail($to, $subject, $emailBody, $headers)) {
-        // Clear form data after successful submission
-        unset($_SESSION['form_data']);
-        // Regenerate CSRF token for security
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         header('Location: /thank-you');
         exit;
     } else {
         error_log('Failed to send contact form email');
-        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=server');
         exit;
     }
@@ -464,10 +422,6 @@ switch ($page_data['template']) {
         break;
 
     case 'contact':
-        // Get form data from session if it exists (for repopulation)
-        $formData = $_SESSION['form_data'] ?? [];
-        unset($_SESSION['form_data']); // Clear after retrieving
-
         $error = $_GET['error'] ?? '';
         $errorMessage = '';
 
@@ -481,8 +435,6 @@ switch ($page_data['template']) {
             $errorMessage = 'Please enter a valid phone number.';
         } elseif ($error === 'invalid_message') {
             $errorMessage = 'Message must be between 10 and 5000 characters.';
-        } elseif ($error === 'invalid_token') {
-            $errorMessage = 'Invalid security token. Please try again.';
         } elseif ($error === 'server') {
             $errorMessage = 'An error occurred. Please try again later.';
         }
@@ -502,10 +454,7 @@ switch ($page_data['template']) {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="/contact" class="contact-form" novalidate>
-                    <!-- CSRF Token -->
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-
+                <form method="POST" action="/contact" class="contact-form">
                     <!-- Honeypot field (hidden from users, bots will fill it) -->
                     <div style="position: absolute; left: -5000px;" aria-hidden="true">
                         <label for="website">Website</label>
@@ -523,10 +472,7 @@ switch ($page_data['template']) {
                             maxlength="100"
                             required
                             aria-required="true"
-                            aria-describedby="name-error"
-                            value="<?php echo htmlspecialchars($formData['name'] ?? ''); ?>"
                         >
-                        <span id="name-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
@@ -538,10 +484,7 @@ switch ($page_data['template']) {
                             autocomplete="email"
                             required
                             aria-required="true"
-                            aria-describedby="email-error"
-                            value="<?php echo htmlspecialchars($formData['email'] ?? ''); ?>"
                         >
-                        <span id="email-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
@@ -552,10 +495,7 @@ switch ($page_data['template']) {
                             name="phone"
                             autocomplete="tel"
                             pattern="[\d\s\-\+\(\)]{7,20}"
-                            aria-describedby="phone-error"
-                            value="<?php echo htmlspecialchars($formData['phone'] ?? ''); ?>"
                         >
-                        <span id="phone-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
@@ -567,9 +507,7 @@ switch ($page_data['template']) {
                             maxlength="5000"
                             required
                             aria-required="true"
-                            aria-describedby="message-error"
-                        ><?php echo htmlspecialchars($formData['message'] ?? ''); ?></textarea>
-                        <span id="message-error" class="error-message" role="alert"></span>
+                        ></textarea>
                     </div>
 
                     <button type="submit" class="submit-button">Send Message</button>

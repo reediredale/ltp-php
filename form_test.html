@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 100px;
+        }
+        button {
+            background: #0fc53d;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0ca032;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <strong>Testing Form Submission</strong><br>
+        This is a standalone test form that submits to your contact handler.
+    </div>
+
+    <h2>Contact Form Test</h2>
+
+    <form method="POST" action="/contact">
+        <!-- Honeypot field -->
+        <div style="position: absolute; left: -5000px;">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+
+        <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" required></textarea>
+        </div>
+
+        <button type="submit">Send Message</button>
+    </form>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            console.log('Form submitting with data:', new FormData(this));
+        });
+    </script>
+</body>
+</html>
