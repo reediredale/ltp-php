@@ -1,4 +1,14 @@
 <?php
+// Start session for CSRF protection
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Generate CSRF token if it doesn't exist
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Configuration
 define('SITE_URL', 'http://ltp.test');
 define('SITE_NAME', 'Leads to Profit');
@@ -68,11 +78,6 @@ if ($request_uri === '/sitemap.xml') {
 
     echo '</urlset>';
     exit;
-}
-
-// Start session for CSRF protection
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
 }
 
 // Handle form submission
@@ -152,9 +157,10 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Send email
     if (mail($to, $subject, $emailBody, $headers)) {
-        // Clear form data and CSRF token after successful submission
+        // Clear form data after successful submission
         unset($_SESSION['form_data']);
-        unset($_SESSION['csrf_token']);
+        // Regenerate CSRF token for security
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         header('Location: /thank-you');
         exit;
     } else {
@@ -163,11 +169,6 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
         header('Location: /contact?error=server');
         exit;
     }
-}
-
-// Generate CSRF token for forms
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // Check if route exists
