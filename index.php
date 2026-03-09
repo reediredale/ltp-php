@@ -30,6 +30,13 @@ $routes = [
         'template' => 'contact',
         'priority' => '0.9',
         'changefreq' => 'monthly'
+    ],
+    '/thank-you' => [
+        'title' => 'Thank You - Message Received',
+        'description' => 'Thank you for contacting Leads to Profit. We will get back to you within 24 hours.',
+        'template' => 'thank-you',
+        'priority' => '0.3',
+        'changefreq' => 'monthly'
     ]
 ];
 
@@ -100,8 +107,6 @@ function initDatabase() {
 
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
-    header('Content-Type: application/json');
-
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $phone = $_POST['phone'] ?? '';
@@ -109,14 +114,12 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Basic validation
     if (empty($name) || empty($email) || empty($message)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
+        header('Location: /contact?error=missing');
         exit;
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
+        header('Location: /contact?error=invalid_email');
         exit;
     }
 
@@ -138,19 +141,14 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
             ':user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null
         ]);
 
-        echo json_encode([
-            'success' => true,
-            'message' => 'Thank you for your message! We\'ll get back to you within 24 hours.'
-        ]);
+        // Redirect to thank you page
+        header('Location: /thank-you');
+        exit;
     } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => 'An error occurred. Please try again later.'
-        ]);
         error_log('Form submission error: ' . $e->getMessage());
+        header('Location: /contact?error=server');
+        exit;
     }
-    exit;
 }
 
 // Check if route exists
@@ -431,6 +429,16 @@ switch ($page_data['template']) {
         break;
 
     case 'contact':
+        $error = $_GET['error'] ?? '';
+        $errorMessage = '';
+
+        if ($error === 'missing') {
+            $errorMessage = 'Please fill in all required fields.';
+        } elseif ($error === 'invalid_email') {
+            $errorMessage = 'Please enter a valid email address.';
+        } elseif ($error === 'server') {
+            $errorMessage = 'An error occurred. Please try again later.';
+        }
         ?>
         <section class="page-header">
             <div class="container">
@@ -441,7 +449,13 @@ switch ($page_data['template']) {
 
         <section class="contact-section">
             <div class="container-narrow">
-                <form id="contactForm" class="contact-form">
+                <?php if ($errorMessage): ?>
+                    <div class="form-message error" style="display: block; margin-bottom: 2rem;">
+                        <?php echo htmlspecialchars($errorMessage); ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="/contact" class="contact-form">
                     <div class="form-group">
                         <label for="name">Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -463,8 +477,6 @@ switch ($page_data['template']) {
                     </div>
 
                     <button type="submit" class="submit-button">Send Message</button>
-
-                    <div id="formMessage" class="form-message"></div>
                 </form>
             </div>
         </section>
@@ -483,6 +495,38 @@ switch ($page_data['template']) {
                     <div class="info-card">
                         <h3>💬 Free Consultation</h3>
                         <p>30-minute strategy call</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php
+        break;
+
+    case 'thank-you':
+        ?>
+        <section class="page-header">
+            <div class="container">
+                <h1>Thank You!</h1>
+                <p>We've received your message and will get back to you within 24 hours.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <div class="thank-you-content">
+                    <div style="text-align: center; padding: 3rem 2rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✓</div>
+                        <h2 style="color: var(--primary-green); margin-bottom: 1rem;">Message Received</h2>
+                        <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2rem;">
+                            Thank you for reaching out to Leads to Profit. One of our team members will review your message and respond within 24 hours.
+                        </p>
+                        <p style="font-size: 1rem; color: var(--text-gray); margin-bottom: 2rem;">
+                            In the meantime, feel free to explore our services or learn more about how we help businesses grow.
+                        </p>
+                        <div class="cta-center" style="margin-top: 2rem;">
+                            <a href="/services" class="cta-button-secondary" style="margin-right: 1rem;">View Our Services</a>
+                            <a href="/" class="cta-button-secondary">Back to Home</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1318,58 +1362,6 @@ $content = ob_get_clean();
                 if (e.key === 'Escape' && navLinks.classList.contains('active')) {
                     closeMenu();
                 }
-            });
-        }
-
-        // Form Submission (only on contact page)
-        const contactForm = document.getElementById('contactForm');
-        if (contactForm) {
-            const formMessage = document.getElementById('formMessage');
-
-            contactForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const submitButton = contactForm.querySelector('.submit-button');
-                submitButton.disabled = true;
-                submitButton.textContent = 'Sending...';
-
-                formMessage.style.display = 'none';
-                formMessage.className = 'form-message';
-
-                const formData = new FormData(contactForm);
-
-                // Convert FormData to URLSearchParams for proper PHP $_POST handling
-                const params = new URLSearchParams(formData);
-
-                try {
-                    const response = await fetch('/contact', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: params
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        formMessage.textContent = data.message;
-                        formMessage.classList.add('success');
-                        formMessage.style.display = 'block';
-                        contactForm.reset();
-                    } else {
-                        formMessage.textContent = data.message;
-                        formMessage.classList.add('error');
-                        formMessage.style.display = 'block';
-                    }
-                } catch (error) {
-                    formMessage.textContent = 'An error occurred. Please try again later.';
-                    formMessage.classList.add('error');
-                    formMessage.style.display = 'block';
-                }
-
-                submitButton.disabled = false;
-                submitButton.textContent = 'Send Message';
             });
         }
     </script>
