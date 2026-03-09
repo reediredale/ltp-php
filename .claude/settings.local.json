@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(php:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": []

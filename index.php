@@ -63,6 +63,41 @@ if ($request_uri === '/sitemap.xml') {
     exit;
 }
 
+// Database initialization function
+function initDatabase() {
+    $dataDir = __DIR__ . '/data';
+    $dbPath = $dataDir . '/submissions.db';
+
+    // Create data directory if it doesn't exist
+    if (!is_dir($dataDir)) {
+        mkdir($dataDir, 0755, true);
+    }
+
+    try {
+        $db = new PDO('sqlite:' . $dbPath);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Create submissions table if it doesn't exist
+        $db->exec("
+            CREATE TABLE IF NOT EXISTS submissions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                phone TEXT,
+                message TEXT NOT NULL,
+                ip_address TEXT,
+                user_agent TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
+
+        return $db;
+    } catch (PDOException $e) {
+        error_log('Database initialization error: ' . $e->getMessage());
+        throw $e;
+    }
+}
+
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
     header('Content-Type: application/json');
@@ -87,8 +122,7 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Save to database
     try {
-        $db = new PDO('sqlite:' . __DIR__ . '/data/submissions.db');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db = initDatabase();
 
         $stmt = $db->prepare("
             INSERT INTO submissions (name, email, phone, message, ip_address, user_agent)
