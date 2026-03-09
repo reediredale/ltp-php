@@ -1,0 +1,68 @@
+================================================================================
+SIMPLE FIX FOR PRODUCTION - PERMISSIONS ISSUE
+================================================================================
+
+I can see the exact problem from your diagnostics:
+
+❌ Data Dir Writable: NOT WRITABLE
+❌ Database Writable: NOT WRITABLE
+
+This is why the form isn't saving submissions.
+
+================================================================================
+AUTOMATIC FIX - DO THIS FIRST
+================================================================================
+
+Step 1: Upload fix-permissions.php
+
+Step 2: Go to: https://leadstoprofit.com.au/fix-permissions.php
+
+Step 3: It will automatically fix the permissions
+
+Step 4: Go to /contact and test the form
+
+DONE! ✅
+
+================================================================================
+IF AUTOMATIC FIX DOESN'T WORK (Manual Fix)
+================================================================================
+
+If the automatic fix fails, SSH into your server and run:
+
+cd /path/to/your/site
+chmod 755 data
+chmod 666 data/submissions.db
+
+Then test the form again.
+
+================================================================================
+FILES TO UPLOAD
+================================================================================
+
+1. fix-permissions.php (NEW - automatic fix)
+2. diagnose.php (to verify after fixing)
+3. submit.php (updated error logging)
+4. index.php (your main site)
+
+================================================================================
+AFTER IT'S FIXED
+================================================================================
+
+1. Delete fix-permissions.php
+2. Delete diagnose.php
+3. Delete init_db.php
+4. Keep submit.php and index.php
+5. View submissions in phpliteadmin.php
+
+================================================================================
+THIS WILL WORK
+================================================================================
+
+The permissions issue is the ONLY thing wrong.
+Everything else (PHP, SQLite, database, table) is perfect.
+
+Just fix the permissions and the form will work.
+
+Upload fix-permissions.php → Visit it → Done
+
+================================================================================

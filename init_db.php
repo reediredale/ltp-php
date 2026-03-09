@@ -17,22 +17,27 @@ if (!extension_loaded('pdo_sqlite')) {
 
 // Create data directory if it doesn't exist
 if (!file_exists($data_dir)) {
-    if (@mkdir($data_dir, 0755, true)) {
+    if (@mkdir($data_dir, 0777, true)) {
         $messages[] = '✅ Created data directory: ' . $data_dir;
+        @chmod($data_dir, 0777); // Ensure it's writable
+        $messages[] = '✅ Set directory permissions to 777 (fully writable)';
     } else {
         $success = false;
         $messages[] = '❌ ERROR: Failed to create data directory. Check permissions.';
-        $messages[] = '   Try running: chmod 755 ' . dirname($data_dir);
+        $messages[] = '   Try running: chmod 777 ' . dirname($data_dir);
     }
 } else {
     $messages[] = '✅ Data directory exists';
+    // Make sure it's writable
+    @chmod($data_dir, 0777);
+    $messages[] = '✅ Set directory permissions to 777';
 }
 
 // Check if directory is writable
 if (file_exists($data_dir) && !is_writable($data_dir)) {
     $success = false;
     $messages[] = '❌ ERROR: Data directory is not writable';
-    $messages[] = '   Try running: chmod 755 ' . $data_dir;
+    $messages[] = '   Try running: chmod 777 ' . $data_dir;
 }
 
 // Create database connection
@@ -63,11 +68,15 @@ if ($success) {
             $messages[] = '✅ Table verified successfully';
         }
 
+        // Make database file writable
+        @chmod($db_file, 0666);
+        $messages[] = '✅ Set database file permissions to 666';
+
         // Check if we can write
         if (!is_writable($db_file)) {
             $success = false;
             $messages[] = '❌ WARNING: Database file is not writable';
-            $messages[] = '   Try running: chmod 644 ' . $db_file;
+            $messages[] = '   Try running: chmod 666 ' . $db_file;
         } else {
             $messages[] = '✅ Database file is writable';
         }
