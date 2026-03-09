@@ -72,9 +72,12 @@ if ($request_uri === '/sitemap.xml') {
 
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
+    error_log("=== FORM SUBMISSION STARTED ===");
+    error_log("POST data: " . print_r($_POST, true));
+
     // Honeypot check (bot protection)
     if (!empty($_POST['website'])) {
-        // Bot detected, silently redirect to thank you page
+        error_log("Bot detected via honeypot");
         header('Location: /thank-you');
         exit;
     }
@@ -85,35 +88,44 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
     $phone = trim(strip_tags($_POST['phone'] ?? ''));
     $message = trim(strip_tags($_POST['message'] ?? ''));
 
+    error_log("Sanitized - Name: $name, Email: $email, Phone: $phone");
+
     // Basic validation
     if (empty($name) || empty($email) || empty($message)) {
+        error_log("Validation failed: Missing required fields");
         header('Location: /contact?error=missing');
         exit;
     }
 
     // Validate name length
     if (strlen($name) < 2 || strlen($name) > 100) {
+        error_log("Validation failed: Invalid name length");
         header('Location: /contact?error=invalid_name');
         exit;
     }
 
     // Email validation
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        error_log("Validation failed: Invalid email format");
         header('Location: /contact?error=invalid_email');
         exit;
     }
 
     // Phone validation (if provided)
     if (!empty($phone) && !preg_match('/^[\d\s\-\+\(\)]{7,20}$/', $phone)) {
+        error_log("Validation failed: Invalid phone format");
         header('Location: /contact?error=invalid_phone');
         exit;
     }
 
     // Message length validation
     if (strlen($message) < 10 || strlen($message) > 5000) {
+        error_log("Validation failed: Invalid message length");
         header('Location: /contact?error=invalid_message');
         exit;
     }
+
+    error_log("All validations passed");
 
     // Prepare email
     $to = 'reed@reediredale.com';
@@ -133,8 +145,11 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
     $headers .= "Reply-To: " . $email . "\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
 
+    error_log("Attempting to send email to: $to");
+
     // Send email
     if (mail($to, $subject, $emailBody, $headers)) {
+        error_log("Email sent successfully - redirecting to thank-you");
         header('Location: /thank-you');
         exit;
     } else {
