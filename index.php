@@ -469,7 +469,7 @@ switch ($page_data['template']) {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="/contact" class="contact-form">
+                <form method="POST" action="/submit.php" class="contact-form">
                     <!-- Honeypot field (hidden from users, bots will fill it) -->
                     <div style="position: absolute; left: -5000px;" aria-hidden="true">
                         <label for="website">Website</label>

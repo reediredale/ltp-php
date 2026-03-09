@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Leads to Profit</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #fafafa; }
+        .container { max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #0fc53d; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 20px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; font-family: inherit; }
+        input:focus, textarea:focus { outline: none; border-color: #0fc53d; }
+        textarea { min-height: 120px; resize: vertical; }
+        button { width: 100%; background: #0fc53d; color: white; padding: 15px; border: none; border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        button:hover { background: #0ca032; }
+        .required { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+
+        <form method="POST" action="/submit.php">
+            <label>Name <span class="required">*</span></label>
+            <input type="text" name="name" required>
+
+            <label>Email <span class="required">*</span></label>
+            <input type="email" name="email" required>
+
+            <label>Phone</label>
+            <input type="tel" name="phone">
+
+            <label>Message <span class="required">*</span></label>
+            <textarea name="message" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+</body>
+</html>
