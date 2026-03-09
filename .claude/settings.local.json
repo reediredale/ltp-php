@@ -4,7 +4,8 @@
       "Bash(php:*)",
       "WebSearch",
       "Bash(sqlite3:*)",
-      "WebFetch(domain:leadstoprofit.com.au)"
+      "WebFetch(domain:leadstoprofit.com.au)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

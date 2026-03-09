@@ -70,21 +70,65 @@ if ($request_uri === '/sitemap.xml') {
     exit;
 }
 
+// Start session for CSRF protection
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Handle form submission
 if ($request_method === 'POST' && $request_uri === '/contact') {
-    $name = $_POST['name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $phone = $_POST['phone'] ?? '';
-    $message = $_POST['message'] ?? '';
+    // CSRF Protection
+    if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) ||
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        header('Location: /contact?error=invalid_token');
+        exit;
+    }
+
+    // Honeypot check (bot protection)
+    if (!empty($_POST['website'])) {
+        // Bot detected, silently redirect to thank you page
+        header('Location: /thank-you');
+        exit;
+    }
+
+    // Sanitize inputs
+    $name = trim(strip_tags($_POST['name'] ?? ''));
+    $email = trim(strip_tags($_POST['email'] ?? ''));
+    $phone = trim(strip_tags($_POST['phone'] ?? ''));
+    $message = trim(strip_tags($_POST['message'] ?? ''));
 
     // Basic validation
     if (empty($name) || empty($email) || empty($message)) {
+        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=missing');
         exit;
     }
 
+    // Validate name length
+    if (strlen($name) < 2 || strlen($name) > 100) {
+        $_SESSION['form_data'] = $_POST;
+        header('Location: /contact?error=invalid_name');
+        exit;
+    }
+
+    // Email validation
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=invalid_email');
+        exit;
+    }
+
+    // Phone validation (if provided)
+    if (!empty($phone) && !preg_match('/^[\d\s\-\+\(\)]{7,20}$/', $phone)) {
+        $_SESSION['form_data'] = $_POST;
+        header('Location: /contact?error=invalid_phone');
+        exit;
+    }
+
+    // Message length validation
+    if (strlen($message) < 10 || strlen($message) > 5000) {
+        $_SESSION['form_data'] = $_POST;
+        header('Location: /contact?error=invalid_message');
         exit;
     }
 
@@ -108,13 +152,22 @@ if ($request_method === 'POST' && $request_uri === '/contact') {
 
     // Send email
     if (mail($to, $subject, $emailBody, $headers)) {
+        // Clear form data and CSRF token after successful submission
+        unset($_SESSION['form_data']);
+        unset($_SESSION['csrf_token']);
         header('Location: /thank-you');
         exit;
     } else {
         error_log('Failed to send contact form email');
+        $_SESSION['form_data'] = $_POST;
         header('Location: /contact?error=server');
         exit;
     }
+}
+
+// Generate CSRF token for forms
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // Check if route exists
@@ -395,6 +448,10 @@ switch ($page_data['template']) {
         break;
 
     case 'contact':
+        // Get form data from session if it exists (for repopulation)
+        $formData = $_SESSION['form_data'] ?? [];
+        unset($_SESSION['form_data']); // Clear after retrieving
+
         $error = $_GET['error'] ?? '';
         $errorMessage = '';
 
@@ -402,6 +459,14 @@ switch ($page_data['template']) {
             $errorMessage = 'Please fill in all required fields.';
         } elseif ($error === 'invalid_email') {
             $errorMessage = 'Please enter a valid email address.';
+        } elseif ($error === 'invalid_name') {
+            $errorMessage = 'Please enter a valid name (2-100 characters).';
+        } elseif ($error === 'invalid_phone') {
+            $errorMessage = 'Please enter a valid phone number.';
+        } elseif ($error === 'invalid_message') {
+            $errorMessage = 'Message must be between 10 and 5000 characters.';
+        } elseif ($error === 'invalid_token') {
+            $errorMessage = 'Invalid security token. Please try again.';
         } elseif ($error === 'server') {
             $errorMessage = 'An error occurred. Please try again later.';
         }
@@ -421,25 +486,74 @@ switch ($page_data['template']) {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="/contact" class="contact-form">
+                <form method="POST" action="/contact" class="contact-form" novalidate>
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+                    <!-- Honeypot field (hidden from users, bots will fill it) -->
+                    <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                        <label for="website">Website</label>
+                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
                     <div class="form-group">
                         <label for="name">Name *</label>
-                        <input type="text" id="name" name="name" required>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            autocomplete="name"
+                            minlength="2"
+                            maxlength="100"
+                            required
+                            aria-required="true"
+                            aria-describedby="name-error"
+                            value="<?php echo htmlspecialchars($formData['name'] ?? ''); ?>"
+                        >
+                        <span id="name-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email"
+                            required
+                            aria-required="true"
+                            aria-describedby="email-error"
+                            value="<?php echo htmlspecialchars($formData['email'] ?? ''); ?>"
+                        >
+                        <span id="email-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="tel" id="phone" name="phone">
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            autocomplete="tel"
+                            pattern="[\d\s\-\+\(\)]{7,20}"
+                            aria-describedby="phone-error"
+                            value="<?php echo htmlspecialchars($formData['phone'] ?? ''); ?>"
+                        >
+                        <span id="phone-error" class="error-message" role="alert"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="message">Tell us about your project *</label>
-                        <textarea id="message" name="message" required></textarea>
+                        <textarea
+                            id="message"
+                            name="message"
+                            minlength="10"
+                            maxlength="5000"
+                            required
+                            aria-required="true"
+                            aria-describedby="message-error"
+                        ><?php echo htmlspecialchars($formData['message'] ?? ''); ?></textarea>
+                        <span id="message-error" class="error-message" role="alert"></span>
                     </div>
 
                     <button type="submit" class="submit-button">Send Message</button>
@@ -1134,6 +1248,24 @@ $content = ob_get_clean();
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .error-message {
+            display: block;
+            color: #721c24;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            min-height: 1.2rem;
+        }
+
+        .form-group input:invalid:not(:placeholder-shown),
+        .form-group textarea:invalid:not(:placeholder-shown) {
+            border-color: #dc3545;
+        }
+
+        .form-group input:valid:not(:placeholder-shown),
+        .form-group textarea:valid:not(:placeholder-shown) {
+            border-color: var(--primary-green);
         }
 
         .contact-info {
