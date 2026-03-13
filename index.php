@@ -30,13 +30,6 @@ $routes = [
         'template' => 'contact',
         'priority' => '0.9',
         'changefreq' => 'monthly'
-    ],
-    '/thank-you' => [
-        'title' => 'Thank You - Message Received',
-        'description' => 'Thank you for contacting Leads to Profit. We will get back to you within 24 hours.',
-        'template' => 'thank-you',
-        'priority' => '0.3',
-        'changefreq' => 'monthly'
     ]
 ];
 
@@ -376,38 +369,6 @@ switch ($page_data['template']) {
                     <div class="info-card">
                         <h3>💬 Free Consultation</h3>
                         <p>30-minute strategy call</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <?php
-        break;
-
-    case 'thank-you':
-        ?>
-        <section class="page-header">
-            <div class="container">
-                <h1>Thank You!</h1>
-                <p>We've received your message and will get back to you within 24 hours.</p>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <div class="container">
-                <div class="thank-you-content">
-                    <div style="text-align: center; padding: 3rem 2rem;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">✓</div>
-                        <h2 style="color: var(--primary-green); margin-bottom: 1rem;">Message Received</h2>
-                        <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2rem;">
-                            Thank you for reaching out to Leads to Profit. One of our team members will review your message and respond within 24 hours.
-                        </p>
-                        <p style="font-size: 1rem; color: var(--text-gray); margin-bottom: 2rem;">
-                            In the meantime, feel free to explore our services or learn more about how we help businesses grow.
-                        </p>
-                        <div class="cta-center" style="margin-top: 2rem;">
-                            <a href="/services" class="cta-button-secondary" style="margin-right: 1rem;">View Our Services</a>
-                            <a href="/" class="cta-button-secondary">Back to Home</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -964,111 +925,6 @@ $content = ob_get_clean();
             padding: 3rem 2rem;
         }
 
-        .contact-form {
-            background: var(--white);
-            padding: 3rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-green);
-        }
-
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .submit-button {
-            background-color: var(--primary-green);
-            color: var(--white);
-            padding: 1rem 3rem;
-            border: none;
-            border-radius: 50px;
-            font-family: 'DINPro', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-
-        .submit-button:hover {
-            background-color: var(--dark-green);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .submit-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .form-message {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 5px;
-            text-align: center;
-            display: none;
-        }
-
-        .form-message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .form-message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .error-message {
-            display: block;
-            color: #721c24;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            min-height: 1.2rem;
-        }
-
-        .form-group input:invalid:not(:placeholder-shown),
-        .form-group textarea:invalid:not(:placeholder-shown) {
-            border-color: #dc3545;
-        }
-
-        .form-group input:valid:not(:placeholder-shown),
-        .form-group textarea:valid:not(:placeholder-shown) {
-            border-color: var(--primary-green);
-        }
-
         .contact-info {
             padding: 3rem 2rem;
             background-color: var(--light-green);
@@ -1175,10 +1031,6 @@ $content = ob_get_clean();
 
             .about-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .contact-form {
-                padding: 2rem 1.5rem;
             }
 
             .services-grid {
