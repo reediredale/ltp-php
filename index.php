@@ -70,95 +70,6 @@ if ($request_uri === '/sitemap.xml') {
     exit;
 }
 
-// Handle form submission
-if ($request_method === 'POST' && $request_uri === '/contact') {
-    error_log("=== FORM SUBMISSION STARTED ===");
-    error_log("POST data: " . print_r($_POST, true));
-
-    // Honeypot check (bot protection)
-    if (!empty($_POST['website'])) {
-        error_log("Bot detected via honeypot");
-        header('Location: /thank-you');
-        exit;
-    }
-
-    // Sanitize inputs
-    $name = trim(strip_tags($_POST['name'] ?? ''));
-    $email = trim(strip_tags($_POST['email'] ?? ''));
-    $phone = trim(strip_tags($_POST['phone'] ?? ''));
-    $message = trim(strip_tags($_POST['message'] ?? ''));
-
-    error_log("Sanitized - Name: $name, Email: $email, Phone: $phone");
-
-    // Basic validation
-    if (empty($name) || empty($email) || empty($message)) {
-        error_log("Validation failed: Missing required fields");
-        header('Location: /contact?error=missing');
-        exit;
-    }
-
-    // Validate name length
-    if (strlen($name) < 2 || strlen($name) > 100) {
-        error_log("Validation failed: Invalid name length");
-        header('Location: /contact?error=invalid_name');
-        exit;
-    }
-
-    // Email validation
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        error_log("Validation failed: Invalid email format");
-        header('Location: /contact?error=invalid_email');
-        exit;
-    }
-
-    // Phone validation (if provided)
-    if (!empty($phone) && !preg_match('/^[\d\s\-\+\(\)]{7,20}$/', $phone)) {
-        error_log("Validation failed: Invalid phone format");
-        header('Location: /contact?error=invalid_phone');
-        exit;
-    }
-
-    // Message length validation
-    if (strlen($message) < 10 || strlen($message) > 5000) {
-        error_log("Validation failed: Invalid message length");
-        header('Location: /contact?error=invalid_message');
-        exit;
-    }
-
-    error_log("All validations passed");
-
-    // Prepare email
-    $to = 'reed@reediredale.com';
-    $subject = 'New Contact Form Submission - Leads to Profit';
-
-    $emailBody = "New contact form submission from Leads to Profit website\n\n";
-    $emailBody .= "Name: " . $name . "\n";
-    $emailBody .= "Email: " . $email . "\n";
-    $emailBody .= "Phone: " . ($phone ?: 'Not provided') . "\n\n";
-    $emailBody .= "Message:\n" . $message . "\n\n";
-    $emailBody .= "---\n";
-    $emailBody .= "Submitted: " . date('Y-m-d H:i:s') . "\n";
-    $emailBody .= "IP Address: " . ($_SERVER['REMOTE_ADDR'] ?? 'Unknown') . "\n";
-
-    // Email headers
-    $headers = "From: noreply@leadstoprofit.com\r\n";
-    $headers .= "Reply-To: " . $email . "\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
-
-    error_log("Attempting to send email to: $to");
-
-    // Send email
-    if (mail($to, $subject, $emailBody, $headers)) {
-        error_log("Email sent successfully - redirecting to thank-you");
-        header('Location: /thank-you');
-        exit;
-    } else {
-        error_log('Failed to send contact form email');
-        header('Location: /contact?error=server');
-        exit;
-    }
-}
-
 // Check if route exists
 if (!isset($routes[$request_uri])) {
     http_response_code(404);
@@ -437,22 +348,6 @@ switch ($page_data['template']) {
         break;
 
     case 'contact':
-        $error = $_GET['error'] ?? '';
-        $errorMessage = '';
-
-        if ($error === 'missing') {
-            $errorMessage = 'Please fill in all required fields.';
-        } elseif ($error === 'invalid_email') {
-            $errorMessage = 'Please enter a valid email address.';
-        } elseif ($error === 'invalid_name') {
-            $errorMessage = 'Please enter a valid name (2-100 characters).';
-        } elseif ($error === 'invalid_phone') {
-            $errorMessage = 'Please enter a valid phone number.';
-        } elseif ($error === 'invalid_message') {
-            $errorMessage = 'Message must be between 10 and 5000 characters.';
-        } elseif ($error === 'server') {
-            $errorMessage = 'An error occurred. Please try again later.';
-        }
         ?>
         <section class="page-header">
             <div class="container">
@@ -463,70 +358,7 @@ switch ($page_data['template']) {
 
         <section class="contact-section">
             <div class="container-narrow">
-                <?php if ($errorMessage): ?>
-                    <div class="form-message error" style="display: block; margin-bottom: 2rem;">
-                        <?php echo htmlspecialchars($errorMessage); ?>
-                    </div>
-                <?php endif; ?>
-
-                <form method="POST" action="/submit.php" class="contact-form">
-                    <!-- Honeypot field (hidden from users, bots will fill it) -->
-                    <div style="position: absolute; left: -5000px;" aria-hidden="true">
-                        <label for="website">Website</label>
-                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name">Name *</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            autocomplete="name"
-                            minlength="2"
-                            maxlength="100"
-                            required
-                            aria-required="true"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            autocomplete="email"
-                            required
-                            aria-required="true"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            autocomplete="tel"
-                            pattern="[\d\s\-\+\(\)]{7,20}"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Tell us about your project *</label>
-                        <textarea
-                            id="message"
-                            name="message"
-                            minlength="10"
-                            maxlength="5000"
-                            required
-                            aria-required="true"
-                        ></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-button">Send Message</button>
-                </form>
+                <div id="cbox-hNPWgg4AnfbXuzSE"></div>
             </div>
         </section>
 
@@ -1354,6 +1186,9 @@ $content = ob_get_clean();
             }
         }
     </style>
+    
+
+    <script type="text/javascript">!function(e,t){(e=t.createElement("script")).src="https://cdn.convertbox.com/convertbox/js/embed.js",e.id="app-convertbox-script",e.async=true,e.dataset.uuid="78b30db1-9aff-48e3-ad56-27f8763a2ab3",document.getElementsByTagName("head")[0].appendChild(e)}(window,document);</script>
 </head>
 <body>
     <header>
