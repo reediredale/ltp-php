@@ -10,9 +10,9 @@ $request_method = $_SERVER['REQUEST_METHOD'];
 // Define valid routes (for pages and sitemap generation)
 $routes = [
     '/' => [
-        'title' => 'Digital Marketing & Lead Generation Experts',
-        'description' => 'Transform your digital marketing with expert lead generation, Meta ads, Google ads, and conversion rate optimisation services.',
-        'template' => 'home'
+        'title' => 'Performance Pay Marketing - Only Pay When You Get Results',
+        'description' => 'Risk-free digital marketing consulting. Choose done for you, done with you, or do it yourself. Only pay for performance.',
+        'template' => 'lp-001'
     ],
     '/services' => [
         'title' => 'Our Services - Lead Generation & Digital Marketing',
@@ -98,7 +98,7 @@ function is_active($path) {
 // Helper function to check if current page is a landing page
 function is_landing_page() {
     global $request_uri;
-    return strpos($request_uri, '/lp-') === 0;
+    return $request_uri === '/' || strpos($request_uri, '/lp-') === 0;
 }
 
 // Start output buffering for content
