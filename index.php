@@ -1189,15 +1189,15 @@ $content = ob_get_clean();
         }
 
         .lp-hero-content {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .lp-hero h1 {
-            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-size: clamp(2.5rem, 10vw, 5.5rem);
             margin-bottom: 1.5rem;
             color: var(--white);
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .lp-subtitle {
