@@ -716,7 +716,8 @@ $content = ob_get_clean();
             text-decoration: none;
             font-family: 'Tacticans Bold', 'Arial Narrow', Arial, sans-serif;
             text-transform: uppercase;
-                letter-spacing: 1px;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .nav-links {
@@ -1407,6 +1408,70 @@ $content = ob_get_clean();
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .container-narrow {
+                padding: 0 1rem;
+            }
+
+            nav {
+                padding: 1rem;
+                gap: 14px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .lp-tagline {
+                font-size: 0.75rem;
+                gap: 4px;
+            }
+
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            .lp-hero {
+                padding: 4rem 1rem;
+            }
+
+            .page-header {
+                padding: 3rem 1rem;
+            }
+
+            .services-preview,
+            .services-detailed,
+            .lp-benefits,
+            .lp-why-section,
+            .lp-testimonials,
+            .lp-faq,
+            .about-content-section,
+            .content-section {
+                padding: 3rem 1rem;
+            }
+
+            .contact-section,
+            .lp-form-section {
+                padding: 2rem 1rem;
+            }
+
+            .stats,
+            .contact-info {
+                padding: 3rem 1rem;
+            }
+
+            .cta-section,
+            .lp-final-cta {
+                padding: 3rem 1rem;
+            }
+
+            .lp-legal {
+                padding: 2rem 1rem;
+            }
+
             .nav-links {
                 position: fixed;
                 top: 70px;
@@ -1457,6 +1522,27 @@ $content = ob_get_clean();
             }
 
             .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            .info-grid {
                 grid-template-columns: 1fr;
             }
         }
