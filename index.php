@@ -30,6 +30,13 @@ $routes = [
         'template' => 'contact',
         'priority' => '0.9',
         'changefreq' => 'monthly'
+    ],
+    '/thank-you-consult' => [
+        'title' => 'Thank You - Let\'s Grow Your Business',
+        'description' => 'Thank you for your interest in working together. Let\'s take a look at your business.',
+        'template' => 'thank-you-consult',
+        'priority' => '0.3',
+        'changefreq' => 'monthly'
     ]
 ];
 
@@ -369,6 +376,38 @@ switch ($page_data['template']) {
                     <div class="info-card">
                         <h3>💬 Free Consultation</h3>
                         <p>30-minute strategy call</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php
+        break;
+
+    case 'thank-you-consult':
+        ?>
+        <section class="page-header">
+            <div class="container">
+                <h1>Thanks for Your Interest in Working Together</h1>
+                <p>Let's take a look at your business</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <div class="thank-you-content">
+                    <div style="text-align: center; padding: 3rem 2rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">✓</div>
+                        <h2 style="color: var(--primary-green); margin-bottom: 1rem;">We're Excited to Work With You</h2>
+                        <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2rem;">
+                            Thank you for taking the first step towards growing your business. We're looking forward to diving into your business and creating a strategy that delivers real results.
+                        </p>
+                        <p style="font-size: 1rem; color: var(--text-gray); margin-bottom: 2rem;">
+                            We'll be in touch within 24 hours to discuss your goals and how we can help you achieve them.
+                        </p>
+                        <div class="cta-center" style="margin-top: 2rem;">
+                            <a href="/services" class="cta-button-secondary" style="margin-right: 1rem;">Explore Our Services</a>
+                            <a href="/" class="cta-button-secondary">Back to Home</a>
+                        </div>
                     </div>
                 </div>
             </div>
