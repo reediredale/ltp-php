@@ -37,6 +37,13 @@ $routes = [
         'template' => 'thank-you-consult',
         'priority' => '0.3',
         'changefreq' => 'monthly'
+    ],
+    '/lp-001' => [
+        'title' => 'Performance Pay Marketing - Only Pay When You Get Results',
+        'description' => 'Risk-free digital marketing consulting. Choose done for you, done with you, or do it yourself. Only pay for performance.',
+        'template' => 'lp-001',
+        'priority' => '0.8',
+        'changefreq' => 'monthly'
     ]
 ];
 
@@ -86,6 +93,12 @@ if (!isset($routes[$request_uri])) {
 function is_active($path) {
     global $request_uri;
     return $request_uri === $path ? 'active' : '';
+}
+
+// Helper function to check if current page is a landing page
+function is_landing_page() {
+    global $request_uri;
+    return strpos($request_uri, '/lp-') === 0;
 }
 
 // Start output buffering for content
@@ -410,6 +423,132 @@ switch ($page_data['template']) {
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+        <?php
+        break;
+
+    case 'lp-001':
+        ?>
+        <section class="lp-hero">
+            <div class="lp-hero-content">
+                <h1>Performance Pay Marketing Consulting</h1>
+                <p class="lp-subtitle">Only Pay When You Get Results - Zero Risk, Maximum Return</p>
+                <p class="lp-subtext">Tired of paying marketing agencies thousands of dollars with no guarantee of results? We only get paid when you get leads, sales, and revenue. Choose the level of support that fits your business.</p>
+                <a href="#form" class="lp-cta-button">Get Your Free Consultation</a>
+            </div>
+        </section>
+
+        <section class="lp-benefits">
+            <div class="container">
+                <h2 class="section-title">Choose Your Path to Growth</h2>
+                <p class="section-subtitle">One offer, three ways to work together</p>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🚀</div>
+                        <h3>Done For You</h3>
+                        <p>We handle everything - strategy, implementation, optimization, and reporting. You focus on running your business while we drive qualified leads and sales. Performance-based pricing means we only win when you win.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🤝</div>
+                        <h3>Done With You</h3>
+                        <p>We work alongside your team, providing expert guidance, proven strategies, and hands-on support. Perfect for businesses that want to build internal capabilities while getting expert results. Pay only for performance.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🎓</div>
+                        <h3>Do It Yourself</h3>
+                        <p>Get the exact playbooks, systems, and strategies we use to drive results for clients. Includes implementation guides, templates, and ongoing support. One-time investment, unlimited potential.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lp-form-section" id="form">
+            <div class="container-narrow">
+                <h2>Let's Discuss Your Marketing Goals</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: var(--text-gray);">Book a free consultation to see which option is right for your business</p>
+                <div id="cbox-hNPWgg4AnfbXuzSE"></div>
+            </div>
+        </section>
+
+        <section class="lp-why-section">
+            <div class="container">
+                <h2 class="section-title">Why Performance Pay Marketing?</h2>
+                <div class="why-grid">
+                    <div class="why-item">
+                        <h3>Zero Financial Risk</h3>
+                        <p>Traditional agencies charge $5,000-$20,000/month whether you get results or not. With performance pay, you only pay when we deliver leads, sales, or revenue. Your investment is protected.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Aligned Incentives</h3>
+                        <p>We succeed when you succeed. This means we're laser-focused on driving real business outcomes, not vanity metrics like impressions or clicks. Your growth is our growth.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Proven Track Record</h3>
+                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimization. Our strategies work because they have to - our revenue depends on your results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lp-testimonials">
+            <div class="container">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We've 3x'd our lead volume in 90 days and only paid for the leads we received. No more wasted ad spend."</p>
+                        <p class="testimonial-author">- Mark R., B2B SaaS Founder</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"The 'done with you' model was perfect for us. We learned how to run profitable campaigns while getting expert guidance every step of the way. ROI has been incredible."</p>
+                        <p class="testimonial-author">- Jessica L., E-commerce Director</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"Best marketing investment we've made. The performance-based model meant zero risk for us, and the results speak for themselves - 400% ROI in the first quarter."</p>
+                        <p class="testimonial-author">- David T., Agency Owner</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lp-faq">
+            <div class="container-narrow">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <h3>How does performance pay work?</h3>
+                        <p>We agree on specific metrics (leads, sales, revenue) and you only pay when we deliver those results. For example, you might pay $50 per qualified lead or 15% of revenue generated from our campaigns. No results = no payment.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Which option is right for my business?</h3>
+                        <p>Done For You is best if you want hands-off marketing. Done With You works well if you have a team but need expert guidance. Do It Yourself is ideal if you have the time and resources to implement strategies yourself. We'll help you decide on our call.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>What if my industry is too competitive?</h3>
+                        <p>We specialize in competitive markets. Our performance-based model means we only take on clients where we're confident we can deliver results. If we don't think we can help you win, we'll tell you upfront.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Do I still need to pay for ad spend?</h3>
+                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimization. You only pay us when those ads generate results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lp-final-cta">
+            <div class="container">
+                <h2>Ready to Grow Without the Risk?</h2>
+                <p>Book your free consultation and let's discuss which path is right for your business. No pressure, no commitments - just an honest conversation about your marketing goals.</p>
+                <a href="#form" class="lp-cta-button">Book Your Free Consultation</a>
+            </div>
+        </section>
+
+        <section class="lp-legal">
+            <div class="container">
+                <p style="text-align: center; color: var(--text-gray); font-size: 0.9rem; line-height: 1.8;">
+                    Results vary based on industry, market conditions, offer quality, and your level of engagement. Performance pay arrangements are customized based on your business model and goals.
+                    We'll discuss specific terms during your consultation.
+                </p>
             </div>
         </section>
         <?php
@@ -1009,6 +1148,251 @@ $content = ob_get_clean();
             margin-bottom: 2rem;
         }
 
+        /* Landing Page Styles */
+        .lp-tagline {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lp-why-section {
+            padding: 5rem 2rem;
+            background-color: var(--white);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .why-item h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .why-item p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .lp-hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .lp-hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .lp-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            line-height: 1.2;
+        }
+
+        .lp-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .lp-video-container {
+            margin: 3rem 0;
+        }
+
+        .lp-video-placeholder {
+            background: #000;
+            border-radius: 10px;
+            padding: 4rem 2rem;
+            position: relative;
+            border: 3px solid var(--primary-green);
+        }
+
+        .play-button {
+            font-size: 4rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .lp-subtext {
+            font-size: 1rem;
+            margin: 2rem 0;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        .lp-cta-button {
+            display: inline-block;
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 1.2rem 3rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: 'DINPro', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            border: 2px solid var(--primary-green);
+            letter-spacing: 1px;
+        }
+
+        .lp-cta-button:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(15, 197, 61, 0.4);
+        }
+
+        .lp-form-section {
+            padding: 5rem 2rem;
+            background-color: var(--light-green);
+        }
+
+        .lp-form-section h2 {
+            text-align: center;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+        }
+
+        .lp-benefits {
+            padding: 5rem 2rem;
+            background-color: var(--white);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-item {
+            text-align: center;
+        }
+
+        .benefit-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-item h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .benefit-item p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .lp-testimonials {
+            padding: 5rem 2rem;
+            background-color: var(--background);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .lp-faq {
+            padding: 5rem 2rem;
+            background-color: var(--white);
+        }
+
+        .faq-items {
+            margin-top: 3rem;
+        }
+
+        .faq-item {
+            background: var(--background);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .faq-item h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .faq-item p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .lp-final-cta {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .lp-final-cta h2 {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .lp-final-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .urgency-text {
+            background-color: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            margin: 1.5rem 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .lp-legal {
+            padding: 3rem 2rem;
+            background-color: var(--background);
+        }
+
         /* Footer */
         footer {
             background-color: var(--text-dark);
@@ -1085,6 +1469,7 @@ $content = ob_get_clean();
     <header>
         <nav>
             <a href="/" class="logo">LEADS TO PROFIT</a>
+            <?php if (!is_landing_page()): ?>
             <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -1096,6 +1481,9 @@ $content = ob_get_clean();
                 <li><a href="/about" class="<?php echo is_active('/about'); ?>">About</a></li>
                 <li><a href="/contact" class="<?php echo is_active('/contact'); ?>">Contact</a></li>
             </ul>
+            <?php else: ?>
+            <div class="lp-tagline">Performance Pay Marketing</div>
+            <?php endif; ?>
         </nav>
     </header>
 
