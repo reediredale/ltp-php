@@ -447,7 +447,7 @@ switch ($page_data['template']) {
                     <div class="benefit-item">
                         <div class="benefit-icon">🚀</div>
                         <h3>Done For You</h3>
-                        <p>We handle everything - strategy, implementation, optimization, and reporting. You focus on running your business while we drive qualified leads and sales. Performance-based pricing means we only win when you win.</p>
+                        <p>We handle everything - strategy, implementation, optimisation, and reporting. You focus on running your business while we drive qualified leads and sales. Performance-based pricing means we only win when you win.</p>
                     </div>
                     <div class="benefit-item">
                         <div class="benefit-icon">🤝</div>
@@ -485,7 +485,7 @@ switch ($page_data['template']) {
                     </div>
                     <div class="why-item">
                         <h3>Proven Track Record</h3>
-                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimization. Our strategies work because they have to - our revenue depends on your results.</p>
+                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimisation. Our strategies work because they have to - our revenue depends on your results.</p>
                     </div>
                 </div>
             </div>
@@ -496,7 +496,7 @@ switch ($page_data['template']) {
                 <h2 class="section-title">What Our Clients Say</h2>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We've 3x'd our lead volume in 90 days and only paid for the leads we received. No more wasted ad spend."</p>
+                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We've tripled our lead volume in 90 days and only paid for the leads we received. No more wasted ad spend."</p>
                         <p class="testimonial-author">- Mark R., B2B SaaS Founder</p>
                     </div>
                     <div class="testimonial-card">
@@ -529,7 +529,7 @@ switch ($page_data['template']) {
                     </div>
                     <div class="faq-item">
                         <h3>Do I still need to pay for ad spend?</h3>
-                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimization. You only pay us when those ads generate results.</p>
+                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimisation. You only pay us when those ads generate results.</p>
                     </div>
                 </div>
             </div>
