@@ -4,7 +4,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: http://ltp.test/sitemap.xml
+Sitemap: https://leadstoprofit.com.au/sitemap.xml
 
 # Crawl-delay (optional, adjust as needed)
 Crawl-delay: 1

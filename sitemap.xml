@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://ltp.test/</loc>
+        <loc>https://leadstoprofit.com.au/</loc>
         <lastmod>2026-03-07</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>http://ltp.test/services</loc>
+        <loc>https://leadstoprofit.com.au/services</loc>
         <lastmod>2026-03-07</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>http://ltp.test/about</loc>
+        <loc>https://leadstoprofit.com.au/about</loc>
         <lastmod>2026-03-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>http://ltp.test/contact</loc>
+        <loc>https://leadstoprofit.com.au/contact</loc>
         <lastmod>2026-03-07</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
