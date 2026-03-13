@@ -10,8 +10,8 @@ $request_method = $_SERVER['REQUEST_METHOD'];
 // Define valid routes (for pages and sitemap generation)
 $routes = [
     '/' => [
-        'title' => 'Performance Pay Marketing - Only Pay When You Get Results',
-        'description' => 'Risk-free digital marketing consulting. Choose done for you, done with you, or do it yourself. Only pay for performance.',
+        'title' => 'Value-Based Marketing Consulting - Pricing That Reflects Results',
+        'description' => 'Digital marketing consulting with flexible pricing models. Choose done for you, done with you, or do it yourself. Pay based on the value we create.',
         'template' => 'lp-001'
     ],
     '/services' => [
@@ -39,8 +39,8 @@ $routes = [
         'changefreq' => 'monthly'
     ],
     '/lp-001' => [
-        'title' => 'Performance Pay Marketing - Only Pay When You Get Results',
-        'description' => 'Risk-free digital marketing consulting. Choose done for you, done with you, or do it yourself. Only pay for performance.',
+        'title' => 'Value-Based Marketing Consulting - Pricing That Reflects Results',
+        'description' => 'Digital marketing consulting with flexible pricing models. Choose done for you, done with you, or do it yourself. Pay based on the value we create.',
         'template' => 'lp-001',
         'priority' => '0.8',
         'changefreq' => 'monthly'
@@ -432,9 +432,9 @@ switch ($page_data['template']) {
         ?>
         <section class="lp-hero">
             <div class="lp-hero-content">
-                <h1>Performance Pay Marketing Consulting</h1>
-                <p class="lp-subtitle">Only Pay When You Get Results - Zero Risk, Maximum Return</p>
-                <p class="lp-subtext">Tired of paying marketing agencies thousands of dollars with no guarantee of results? We only get paid when you get leads, sales, and revenue. Choose the level of support that fits your business.</p>
+                <h1>Marketing Consulting Priced on Value, Not Hours</h1>
+                <p class="lp-subtitle">Flexible Pricing Models That Align With Your Business Goals</p>
+                <p class="lp-subtext">Tired of paying marketing agencies by the hour with no connection to results? We price based on the value we create for your business. Whether it's performance-based, fixed investment, or base + commission - we structure pricing around outcomes, not timesheets.</p>
                 <a href="#form" class="lp-cta-button">Get Your Free Consultation</a>
             </div>
         </section>
@@ -447,12 +447,12 @@ switch ($page_data['template']) {
                     <div class="benefit-item">
                         <div class="benefit-icon">🚀</div>
                         <h3>Done For You</h3>
-                        <p>We handle everything - strategy, implementation, optimisation, and reporting. You focus on running your business while we drive qualified leads and sales. Performance-based pricing means we only win when you win.</p>
+                        <p>We handle everything - strategy, implementation, optimisation, and reporting. You focus on running your business while we drive qualified leads and sales. We'll structure pricing based on the value created - whether that's performance-based, fixed investment, or base + commission.</p>
                     </div>
                     <div class="benefit-item">
                         <div class="benefit-icon">🤝</div>
                         <h3>Done With You</h3>
-                        <p>We work alongside your team, providing expert guidance, proven strategies, and hands-on support. Perfect for businesses that want to build internal capabilities while getting expert results. Pay only for performance.</p>
+                        <p>We work alongside your team, providing expert guidance, proven strategies, and hands-on support. Perfect for businesses that want to build internal capabilities while getting expert results. Pricing structured around the strategic value and outcomes we deliver together.</p>
                     </div>
                     <div class="benefit-item">
                         <div class="benefit-icon">🎓</div>
@@ -473,19 +473,19 @@ switch ($page_data['template']) {
 
         <section class="lp-why-section">
             <div class="container">
-                <h2 class="section-title">Why Performance Pay Marketing?</h2>
+                <h2 class="section-title">Why Value-Based Pricing?</h2>
                 <div class="why-grid">
                     <div class="why-item">
-                        <h3>Zero Financial Risk</h3>
-                        <p>Traditional agencies charge $5,000-$20,000/month whether you get results or not. With performance pay, you only pay when we deliver leads, sales, or revenue. Your investment is protected.</p>
+                        <h3>Pricing Based on Outcomes</h3>
+                        <p>Traditional agencies charge by the hour or with arbitrary monthly retainers. We price based on the value we create for your business. Whether you prefer performance-based (pay per lead/sale), fixed investment, or base + commission - we structure pricing around business outcomes, not timesheets.</p>
                     </div>
                     <div class="why-item">
                         <h3>Aligned Incentives</h3>
-                        <p>We succeed when you succeed. This means we're laser-focused on driving real business outcomes, not vanity metrics like impressions or clicks. Your growth is our growth.</p>
+                        <p>We succeed when you succeed. Our pricing models ensure we're laser-focused on driving real business outcomes, not vanity metrics like impressions or clicks. We earn more when you earn more, creating true partnership.</p>
                     </div>
                     <div class="why-item">
                         <h3>Proven Track Record</h3>
-                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimisation. Our strategies work because they have to - our revenue depends on your results.</p>
+                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimisation. Our strategies work because we've proven their value across multiple pricing models and industries.</p>
                     </div>
                 </div>
             </div>
@@ -496,7 +496,7 @@ switch ($page_data['template']) {
                 <h2 class="section-title">What Our Clients Say</h2>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We've tripled our lead volume in 90 days and only paid for the leads we received. No more wasted ad spend."</p>
+                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We agreed on a fixed investment tied to clear KPIs, and they delivered beyond expectations. Tripled our lead volume in 90 days."</p>
                         <p class="testimonial-author">- Mark R., B2B SaaS Founder</p>
                     </div>
                     <div class="testimonial-card">
@@ -504,7 +504,7 @@ switch ($page_data['template']) {
                         <p class="testimonial-author">- Jessica L., E-commerce Director</p>
                     </div>
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"Best marketing investment we've made. The performance-based model meant zero risk for us, and the results speak for themselves - 400% ROI in the first quarter."</p>
+                        <p class="testimonial-text">"Best marketing investment we've made. We chose the base + commission model which gave us predictability with upside. Results speak for themselves - 400% ROI in the first quarter."</p>
                         <p class="testimonial-author">- David T., Agency Owner</p>
                     </div>
                 </div>
@@ -516,8 +516,8 @@ switch ($page_data['template']) {
                 <h2 class="section-title">Frequently Asked Questions</h2>
                 <div class="faq-items">
                     <div class="faq-item">
-                        <h3>How does performance pay work?</h3>
-                        <p>We agree on specific metrics (leads, sales, revenue) and you only pay when we deliver those results. For example, you might pay $50 per qualified lead or 15% of revenue generated from our campaigns. No results = no payment.</p>
+                        <h3>How does value-based pricing work?</h3>
+                        <p>We price based on the value we create, not hours worked. Depending on your business and goals, we might structure pricing as: <strong>Performance-based</strong> (pay per lead/sale), <strong>Fixed investment</strong> (tied to strategic value and outcomes), or <strong>Base + commission</strong> (predictable base with performance upside). We'll discuss what makes most sense on our call.</p>
                     </div>
                     <div class="faq-item">
                         <h3>Which option is right for my business?</h3>
@@ -525,11 +525,11 @@ switch ($page_data['template']) {
                     </div>
                     <div class="faq-item">
                         <h3>What if my industry is too competitive?</h3>
-                        <p>We specialize in competitive markets. Our performance-based model means we only take on clients where we're confident we can deliver results. If we don't think we can help you win, we'll tell you upfront.</p>
+                        <p>We specialise in competitive markets. Our value-based pricing model means we only take on clients where we're confident we can deliver meaningful results. If we don't think we can create real value for you, we'll tell you upfront.</p>
                     </div>
                     <div class="faq-item">
                         <h3>Do I still need to pay for ad spend?</h3>
-                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimisation. You only pay us when those ads generate results.</p>
+                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimisation. Our fees are separate from ad spend and structured based on the value and results we deliver.</p>
                     </div>
                 </div>
             </div>
@@ -546,8 +546,8 @@ switch ($page_data['template']) {
         <section class="lp-legal">
             <div class="container">
                 <p style="text-align: center; color: var(--text-gray); font-size: 0.9rem; line-height: 1.8;">
-                    Results vary based on industry, market conditions, offer quality, and your level of engagement. Performance pay arrangements are customized based on your business model and goals.
-                    We'll discuss specific terms during your consultation.
+                    Results vary based on industry, market conditions, offer quality, and your level of engagement. Pricing structures are customised based on your business model, goals, and the strategic value we can create.
+                    We'll discuss specific pricing options during your consultation.
                 </p>
             </div>
         </section>
@@ -1568,7 +1568,7 @@ $content = ob_get_clean();
                 <li><a href="/contact" class="<?php echo is_active('/contact'); ?>">Contact</a></li>
             </ul>
             <?php else: ?>
-            <div class="lp-tagline">Performance Pay Marketing</div>
+            <div class="lp-tagline">Value-Based Marketing</div>
             <?php endif; ?>
         </nav>
     </header>
