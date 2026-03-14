@@ -10,8 +10,8 @@ $request_method = $_SERVER['REQUEST_METHOD'];
 // Define valid routes (for pages and sitemap generation)
 $routes = [
     '/' => [
-        'title' => 'Value-Based Marketing Consulting - Pricing That Reflects Results',
-        'description' => 'Digital marketing consulting with flexible pricing models. Choose done for you, done with you, or do it yourself. Pay based on the value we create.',
+        'title' => 'Marketing Consulting for $1M+ Home Services Businesses',
+        'description' => 'Specialised digital marketing for established home services businesses. Done for you services or advisory support. Pricing models that align with your growth.',
         'template' => 'lp-001'
     ],
     '/services' => [
@@ -39,8 +39,8 @@ $routes = [
         'changefreq' => 'monthly'
     ],
     '/lp-001' => [
-        'title' => 'Value-Based Marketing Consulting - Pricing That Reflects Results',
-        'description' => 'Digital marketing consulting with flexible pricing models. Choose done for you, done with you, or do it yourself. Pay based on the value we create.',
+        'title' => 'Marketing Consulting for $1M+ Home Services Businesses',
+        'description' => 'Specialised digital marketing for established home services businesses. Done for you services or advisory support. Pricing models that align with your growth.',
         'template' => 'lp-001',
         'priority' => '0.8',
         'changefreq' => 'monthly'
@@ -432,32 +432,27 @@ switch ($page_data['template']) {
         ?>
         <section class="lp-hero">
             <div class="lp-hero-content">
-                <h1>Marketing Consulting Priced on Value, Not Hours</h1>
-                <p class="lp-subtitle">Flexible Pricing Models That Align With Your Business Goals</p>
-                <p class="lp-subtext">Tired of paying marketing agencies by the hour with no connection to results? We price based on the value we create for your business. Whether it's performance-based, fixed investment, or base + commission - we structure pricing around outcomes, not timesheets.</p>
+                <h1>Marketing Consulting for Home Services Businesses</h1>
+                <p class="lp-subtitle">Specialised for Established Businesses Doing $1M+ in Revenue</p>
+                <p class="lp-subtext">You've built a solid home services business, but scaling past $1M requires different marketing strategies than what got you here. We specialise in helping plumbers, electricians, HVAC companies, and other trades businesses systematically grow revenue without burning out. We offer done-for-you services or advisory support - with pricing that aligns with your business goals.</p>
                 <a href="#form" class="lp-cta-button">Get Your Free Consultation</a>
             </div>
         </section>
 
         <section class="lp-benefits">
             <div class="container">
-                <h2 class="section-title">Choose Your Path to Growth</h2>
-                <p class="section-subtitle">One offer, three ways to work together</p>
+                <h2 class="section-title">How We Help Home Services Businesses Scale</h2>
+                <p class="section-subtitle">Two ways to work together - choose what fits your business best</p>
                 <div class="benefits-grid">
                     <div class="benefit-item">
                         <div class="benefit-icon">🚀</div>
                         <h3>Done For You</h3>
-                        <p>We handle everything - strategy, implementation, optimisation, and reporting. You focus on running your business while we drive qualified leads and sales. We'll structure pricing based on the value created - whether that's performance-based, fixed investment, or base + commission.</p>
+                        <p>Perfect for busy owners who want experts to handle their marketing. We manage your Meta Ads, Google Ads, SEO, and conversion optimisation while you focus on delivering great service and running operations. We'll structure pricing based on the value created for your specific business.</p>
                     </div>
                     <div class="benefit-item">
                         <div class="benefit-icon">🤝</div>
-                        <h3>Done With You</h3>
-                        <p>We work alongside your team, providing expert guidance, proven strategies, and hands-on support. Perfect for businesses that want to build internal capabilities while getting expert results. Pricing structured around the strategic value and outcomes we deliver together.</p>
-                    </div>
-                    <div class="benefit-item">
-                        <div class="benefit-icon">🎓</div>
-                        <h3>Do It Yourself</h3>
-                        <p>Get the exact playbooks, systems, and strategies we use to drive results for clients. Includes implementation guides, templates, and ongoing support. One-time investment, unlimited potential.</p>
+                        <h3>Advisory Services</h3>
+                        <p>Best for businesses with a marketing person or small team who need expert guidance. We work alongside your team, providing strategy, training, and hands-on support specific to home services marketing. Build internal capabilities while getting expert results.</p>
                     </div>
                 </div>
             </div>
@@ -465,71 +460,71 @@ switch ($page_data['template']) {
 
         <section class="lp-form-section" id="form">
             <div class="container-narrow">
-                <h2>Let's Discuss Your Marketing Goals</h2>
-                <p style="text-align: center; margin-bottom: 2rem; color: var(--text-gray);">Book a free consultation to see which option is right for your business</p>
+                <h2>Let's Discuss Growing Your Home Services Business</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: var(--text-gray);">Book a free consultation to see how we can help you scale past $1M</p>
                 <div id="cbox-hNPWgg4AnfbXuzSE"></div>
             </div>
         </section>
 
         <section class="lp-why-section">
             <div class="container">
-                <h2 class="section-title">Why Value-Based Pricing?</h2>
+                <h2 class="section-title">Why We Focus on $1M+ Home Services Businesses</h2>
                 <div class="why-grid">
                     <div class="why-item">
-                        <h3>Pricing Based on Outcomes</h3>
-                        <p>Traditional agencies charge by the hour or with arbitrary monthly retainers. We price based on the value we create for your business. Whether you prefer performance-based (pay per lead/sale), fixed investment, or base + commission - we structure pricing around business outcomes, not timesheets.</p>
+                        <h3>You Need Different Strategies</h3>
+                        <p>The marketing that worked to get you to $1M won't get you to $5M. Established home services businesses need sophisticated lead generation, conversion optimisation, and systems - not basic Facebook ads. We specialise in the strategies that work at your scale.</p>
                     </div>
                     <div class="why-item">
-                        <h3>Aligned Incentives</h3>
-                        <p>We succeed when you succeed. Our pricing models ensure we're laser-focused on driving real business outcomes, not vanity metrics like impressions or clicks. We earn more when you earn more, creating true partnership.</p>
+                        <h3>We Understand Your Business</h3>
+                        <p>Home services marketing is different from e-commerce or SaaS. Service area targeting, seasonal fluctuations, job costing, booking systems - we've built campaigns for plumbers, electricians, HVAC companies, and other trades. We speak your language.</p>
                     </div>
                     <div class="why-item">
-                        <h3>Proven Track Record</h3>
-                        <p>We've driven over 500+ successful campaigns across Meta Ads, Google Ads, email marketing, and conversion optimisation. Our strategies work because we've proven their value across multiple pricing models and industries.</p>
+                        <h3>Aligned on Outcomes, Not Hours</h3>
+                        <p>We price based on the value we create for your business, not arbitrary hourly rates. Whether it's performance-based, fixed investment, or base + commission - we structure pricing around business outcomes. You get predictability and we're incentivised to deliver results.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="lp-testimonials">
+        <!-- <section class="lp-testimonials">
             <div class="container">
-                <h2 class="section-title">What Our Clients Say</h2>
+                <h2 class="section-title">What Home Services Business Owners Say</h2>
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"Finally, a marketing partner that actually cares about results. We agreed on a fixed investment tied to clear KPIs, and they delivered beyond expectations. Tripled our lead volume in 90 days."</p>
-                        <p class="testimonial-author">- Mark R., B2B SaaS Founder</p>
+                        <p class="testimonial-text">"Finally, a marketing partner who actually understands the plumbing business. They helped us scale from $1.2M to $3.5M in 18 months by fixing our lead generation and booking systems. Worth every dollar."</p>
+                        <p class="testimonial-author">- Michael S., Plumbing Company Owner</p>
                     </div>
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"The 'done with you' model was perfect for us. We learned how to run profitable campaigns while getting expert guidance every step of the way. ROI has been incredible."</p>
-                        <p class="testimonial-author">- Jessica L., E-commerce Director</p>
+                        <p class="testimonial-text">"The advisory services were perfect for us. My marketing coordinator learned how to run profitable Google Ads while getting expert guidance. We've doubled our service calls and know how to maintain it ourselves."</p>
+                        <p class="testimonial-author">- Jennifer K., HVAC Business Owner</p>
                     </div>
                     <div class="testimonial-card">
-                        <p class="testimonial-text">"Best marketing investment we've made. We chose the base + commission model which gave us predictability with upside. Results speak for themselves - 400% ROI in the first quarter."</p>
-                        <p class="testimonial-author">- David T., Agency Owner</p>
+                        <p class="testimonial-text">"Best investment we made. They got us off the referral rollercoaster and built a predictable lead generation system. We went from hoping the phone rings to scheduling jobs two weeks out."</p>
+                        <p class="testimonial-author">- David L., Electrical Contractor</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <section class="lp-faq">
             <div class="container-narrow">
                 <h2 class="section-title">Frequently Asked Questions</h2>
                 <div class="faq-items">
                     <div class="faq-item">
-                        <h3>How does value-based pricing work?</h3>
-                        <p>We price based on the value we create, not hours worked. Depending on your business and goals, we might structure pricing as: <strong>Performance-based</strong> (pay per lead/sale), <strong>Fixed investment</strong> (tied to strategic value and outcomes), or <strong>Base + commission</strong> (predictable base with performance upside). We'll discuss what makes most sense on our call.</p>
+                        <h3>Why only $1M+ revenue businesses?</h3>
+                        <p>At this scale, you have the foundation to invest in sophisticated marketing systems. You're past survival mode and ready to build predictable, scalable growth. The strategies that work at your level are different from startups, and we specialise in what works for established home services businesses.</p>
                     </div>
                     <div class="faq-item">
                         <h3>Which option is right for my business?</h3>
-                        <p>Done For You is best if you want hands-off marketing. Done With You works well if you have a team but need expert guidance. Do It Yourself is ideal if you have the time and resources to implement strategies yourself. We'll help you decide on our call.</p>
+                        <p><strong>Done For You</strong> is best if you're too busy to manage marketing yourself and want experts to handle everything. <strong>Advisory Services</strong> works well if you have someone on your team handling marketing but need expert guidance, strategy, and hands-on support. We'll help you decide what fits best on our call.</p>
                     </div>
                     <div class="faq-item">
-                        <h3>What if my industry is too competitive?</h3>
-                        <p>We specialise in competitive markets. Our value-based pricing model means we only take on clients where we're confident we can deliver meaningful results. If we don't think we can create real value for you, we'll tell you upfront.</p>
+                        <h3>Do you work with all types of home services?</h3>
+                        <p>We specialise in trades and field services - plumbers, electricians, HVAC, roofing, landscaping, etc. If you send teams to customer locations, we likely have experience in your industry. We focus on what we know works rather than taking on any business.</p>
                     </div>
                     <div class="faq-item">
-                        <h3>Do I still need to pay for ad spend?</h3>
-                        <p>Yes, you'll cover the ad spend on platforms like Meta and Google. We handle the strategy, creative, targeting, and optimisation. Our fees are separate from ad spend and structured based on the value and results we deliver.</p>
+                        <h3>How does pricing work?</h3>
+                        <p>We structure pricing based on the value we create for your specific business. This might be performance-based (pay per lead), fixed investment (tied to outcomes), or base + commission (predictable with upside). We'll discuss what makes sense based on your goals, current revenue, and growth targets on our consultation call.</p>
                     </div>
                 </div>
             </div>
@@ -537,8 +532,8 @@ switch ($page_data['template']) {
 
         <section class="lp-final-cta">
             <div class="container">
-                <h2>Ready to Grow Without the Risk?</h2>
-                <p>Book your free consultation and let's discuss which path is right for your business. No pressure, no commitments - just an honest conversation about your marketing goals.</p>
+                <h2>Ready to Scale Your Home Services Business?</h2>
+                <p>Book your free consultation and let's discuss your growth goals. No pressure, no commitments - just an honest conversation about what's working, what's not, and how we can help you get to the next level.</p>
                 <a href="#form" class="lp-cta-button">Book Your Free Consultation</a>
             </div>
         </section>
@@ -1568,7 +1563,7 @@ $content = ob_get_clean();
                 <li><a href="/contact" class="<?php echo is_active('/contact'); ?>">Contact</a></li>
             </ul>
             <?php else: ?>
-            <div class="lp-tagline">Value-Based Marketing</div>
+            <div class="lp-tagline">Home Services Marketing</div>
             <?php endif; ?>
         </nav>
     </header>
