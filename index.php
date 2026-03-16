@@ -1,7 +1,28 @@
 <?php
 // Configuration
-define('SITE_URL', 'http://ltp.test');
+define('SITE_URL', 'https://leadstoprofit.com.au');
 define('SITE_NAME', 'Leads to Profit');
+
+// Load JSON data for programmatic SEO
+$suburbs_data = json_decode(file_get_contents(__DIR__ . '/data/brisbane-suburbs.json'), true);
+$marketing_services_data = json_decode(file_get_contents(__DIR__ . '/data/marketing-services.json'), true);
+$business_types_data = json_decode(file_get_contents(__DIR__ . '/data/business-types.json'), true);
+
+// Create lookup arrays for faster access
+$suburbs_by_slug = [];
+foreach ($suburbs_data as $suburb) {
+    $suburbs_by_slug[$suburb['slug']] = $suburb;
+}
+
+$marketing_services_by_slug = [];
+foreach ($marketing_services_data as $service) {
+    $marketing_services_by_slug[$service['slug']] = $service;
+}
+
+$business_types_by_slug = [];
+foreach ($business_types_data as $business) {
+    $business_types_by_slug[$business['slug']] = $business;
+}
 
 // Simple routing for nginx
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -44,6 +65,13 @@ $routes = [
         'template' => 'lp-001',
         'priority' => '0.8',
         'changefreq' => 'monthly'
+    ],
+    '/brisbane-home-services-marketing' => [
+        'title' => 'Marketing Services for Brisbane Home Services Businesses',
+        'description' => 'Marketing services for plumbers, electricians, HVAC companies, and other home services businesses across Brisbane. Google Ads, SEO, Facebook Ads, and more.',
+        'template' => 'services-directory',
+        'priority' => '0.9',
+        'changefreq' => 'weekly'
     ]
 ];
 
@@ -58,18 +86,86 @@ foreach ($routes as $path => &$route) {
 }
 unset($route);
 
-// Handle sitemap.xml - Auto-generate from routes
+// Handle sitemap.xml - Create sitemap index (splits into multiple files)
 if ($request_uri === '/sitemap.xml') {
+    header('Content-Type: application/xml; charset=utf-8');
+
+    // Calculate total URLs and number of sitemaps needed (50,000 URLs per sitemap)
+    $static_urls = [];
+    foreach ($routes as $path => $data) {
+        if (strpos($path, '/lp-') !== 0) {
+            $static_urls[] = $path;
+        }
+    }
+
+    $total_programmatic = count($marketing_services_data) * count($business_types_data) * count($suburbs_data);
+    $total_urls = count($static_urls) + $total_programmatic;
+    $urls_per_sitemap = 50000;
+    $num_sitemaps = ceil($total_urls / $urls_per_sitemap);
+
+    // Output sitemap index
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+    for ($i = 1; $i <= $num_sitemaps; $i++) {
+        echo '    <sitemap>' . "\n";
+        echo '        <loc>' . SITE_URL . '/sitemap-' . $i . '.xml</loc>' . "\n";
+        echo '        <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
+        echo '    </sitemap>' . "\n";
+    }
+
+    echo '</sitemapindex>';
+    exit;
+}
+
+// Handle individual sitemap files (sitemap-1.xml, sitemap-2.xml, etc.)
+if (preg_match('/^\/sitemap-(\d+)\.xml$/', $request_uri, $matches)) {
+    $sitemap_num = (int)$matches[1];
+    $urls_per_sitemap = 50000;
+    $offset = ($sitemap_num - 1) * $urls_per_sitemap;
+
     header('Content-Type: application/xml; charset=utf-8');
     echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
+    // Collect all URLs first
+    $all_urls = [];
+
+    // Add static routes (exclude landing pages)
     foreach ($routes as $path => $data) {
+        if (strpos($path, '/lp-') === 0) {
+            continue;
+        }
+        $all_urls[] = [
+            'loc' => SITE_URL . $path,
+            'changefreq' => $data['changefreq'],
+            'priority' => $data['priority']
+        ];
+    }
+
+    // Add programmatic SEO pages
+    foreach ($marketing_services_data as $marketing_service) {
+        foreach ($business_types_data as $business_type) {
+            foreach ($suburbs_data as $suburb) {
+                $url = '/' . $marketing_service['slug'] . '-for-' . $business_type['slug'] . '-in-' . $suburb['slug'];
+                $all_urls[] = [
+                    'loc' => SITE_URL . $url,
+                    'changefreq' => 'monthly',
+                    'priority' => '0.7'
+                ];
+            }
+        }
+    }
+
+    // Output URLs for this sitemap (with pagination)
+    $urls_for_this_sitemap = array_slice($all_urls, $offset, $urls_per_sitemap);
+
+    foreach ($urls_for_this_sitemap as $url_data) {
         echo '    <url>' . "\n";
-        echo '        <loc>' . SITE_URL . $path . '</loc>' . "\n";
+        echo '        <loc>' . $url_data['loc'] . '</loc>' . "\n";
         echo '        <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
-        echo '        <changefreq>' . $data['changefreq'] . '</changefreq>' . "\n";
-        echo '        <priority>' . $data['priority'] . '</priority>' . "\n";
+        echo '        <changefreq>' . $url_data['changefreq'] . '</changefreq>' . "\n";
+        echo '        <priority>' . $url_data['priority'] . '</priority>' . "\n";
         echo '    </url>' . "\n";
     }
 
@@ -77,8 +173,56 @@ if ($request_uri === '/sitemap.xml') {
     exit;
 }
 
-// Check if route exists
+// Check for programmatic SEO pages (marketing-service-for-business-in-suburb pattern)
+$is_local_seo_page = false;
+$marketing_service = null;
+$business_type = null;
+$local_suburb = null;
+
 if (!isset($routes[$request_uri])) {
+    // Try to match marketing-service-for-business-in-suburb pattern
+    $uri_path = trim($request_uri, '/');
+
+    // Check if URL contains both "-for-" and "-in-"
+    if (strpos($uri_path, '-for-') !== false && strpos($uri_path, '-in-') !== false) {
+        // Split by "-for-" first
+        $for_parts = explode('-for-', $uri_path, 2);
+        if (count($for_parts) === 2) {
+            $marketing_slug_candidate = $for_parts[0];
+
+            // Split the remainder by "-in-"
+            $in_parts = explode('-in-', $for_parts[1], 2);
+            if (count($in_parts) === 2) {
+                $business_slug_candidate = $in_parts[0];
+                $suburb_slug_candidate = $in_parts[1];
+
+                // Verify all three parts exist in our data
+                if (isset($marketing_services_by_slug[$marketing_slug_candidate]) &&
+                    isset($business_types_by_slug[$business_slug_candidate]) &&
+                    isset($suburbs_by_slug[$suburb_slug_candidate])) {
+
+                    $is_local_seo_page = true;
+                    $marketing_service = $marketing_services_by_slug[$marketing_slug_candidate];
+                    $business_type = $business_types_by_slug[$business_slug_candidate];
+                    $local_suburb = $suburbs_by_slug[$suburb_slug_candidate];
+                }
+            }
+        }
+    }
+}
+
+// Check if route exists or if it's a local SEO page
+if ($is_local_seo_page) {
+    // Create page data for local marketing service page
+    $page_data = [
+        'title' => $marketing_service['name'] . ' for ' . $business_type['name'] . ' in ' . $local_suburb['name'] . ', Brisbane',
+        'description' => $marketing_service['name'] . ' services for ' . strtolower($business_type['name']) . ' in ' . $local_suburb['name'] . ', Brisbane. ' . $marketing_service['description'] . '. Get qualified leads and grow your business.',
+        'template' => 'local-marketing-service',
+        'marketing_service' => $marketing_service,
+        'business_type' => $business_type,
+        'suburb' => $local_suburb
+    ];
+} elseif (!isset($routes[$request_uri])) {
     http_response_code(404);
     $page_data = [
         'title' => '404 Not Found',
@@ -546,6 +690,421 @@ switch ($page_data['template']) {
                 </p>
             </div>
         </section>
+        <?php
+        break;
+
+    case 'services-directory':
+        ?>
+        <section class="page-header">
+            <div class="container">
+                <h1>Marketing Services for Brisbane Home Services Businesses</h1>
+                <p>Find the right marketing solution for your trade or home services business</p>
+            </div>
+        </section>
+
+        <section class="directory-section">
+            <div class="container">
+                <h2 class="section-title">Browse by Marketing Service</h2>
+                <p class="section-subtitle">Select a marketing service to see which businesses and suburbs we serve</p>
+
+                <div class="directory-grid">
+                    <?php
+                    $mkt_categories = [];
+                    foreach ($marketing_services_data as $mkt_service) {
+                        $cat = $mkt_service['category'];
+                        if (!isset($mkt_categories[$cat])) {
+                            $mkt_categories[$cat] = [];
+                        }
+                        $mkt_categories[$cat][] = $mkt_service;
+                    }
+                    ksort($mkt_categories);
+
+                    foreach ($mkt_categories as $category => $services):
+                    ?>
+                        <div class="directory-category">
+                            <h3><?php echo $category; ?></h3>
+                            <div class="directory-links">
+                                <?php foreach ($services as $mkt_svc): ?>
+                                    <details class="service-dropdown">
+                                        <summary><?php echo $mkt_svc['name']; ?> (<?php echo count($business_types_data) . ' industries'; ?>)</summary>
+                                        <div class="suburb-links">
+                                            <?php
+                                            $display_businesses = array_slice($business_types_data, 0, 10);
+                                            foreach ($display_businesses as $biz):
+                                                // Link to first suburb as an example
+                                                $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'] . '-in-' . $suburbs_data[0]['slug'];
+                                            ?>
+                                                <a href="<?php echo $url; ?>">For <?php echo $biz['name']; ?></a>
+                                            <?php endforeach; ?>
+                                            <?php if (count($business_types_data) > 10): ?>
+                                                <span class="more-suburbs">...and <?php echo count($business_types_data) - 10; ?> more industries</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </details>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <section class="directory-suburbs">
+            <div class="container">
+                <h2 class="section-title">Browse by Industry</h2>
+                <p class="section-subtitle">Find marketing services for your type of business</p>
+
+                <div class="suburbs-grid">
+                    <?php
+                    foreach ($business_types_data as $biz):
+                    ?>
+                        <div class="suburb-card">
+                            <h3><?php echo $biz['name']; ?></h3>
+                            <p class="postcode"><?php echo $biz['industry']; ?></p>
+                            <p><?php echo count($marketing_services_data); ?> marketing services available</p>
+                            <details class="service-dropdown">
+                                <summary>View Services</summary>
+                                <div class="suburb-service-links">
+                                    <?php
+                                    $display_services = array_slice($marketing_services_data, 0, 6);
+                                    foreach ($display_services as $mkt_svc):
+                                        $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'] . '-in-' . $suburbs_data[0]['slug'];
+                                    ?>
+                                        <a href="<?php echo $url; ?>"><?php echo $mkt_svc['name']; ?></a>
+                                    <?php endforeach; ?>
+                                    <span class="more-services">...and more</span>
+                                </div>
+                            </details>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <section class="directory-suburbs" style="background: var(--white);">
+            <div class="container">
+                <h2 class="section-title">Brisbane Suburbs We Serve</h2>
+                <p class="section-subtitle">Marketing services for home services businesses across all Brisbane suburbs</p>
+
+                <div style="margin-top: 2rem; columns: 4; column-gap: 2rem;">
+                    <?php foreach (array_slice($suburbs_data, 0, 80) as $suburb): ?>
+                        <p style="margin: 0.3rem 0; color: var(--text-gray); break-inside: avoid;">
+                            <?php echo $suburb['name']; ?> (<?php echo $suburb['postcode']; ?>)
+                        </p>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if (count($suburbs_data) > 80): ?>
+                    <p style="text-align: center; margin-top: 2rem; color: var(--text-gray);">
+                        ...and <?php echo count($suburbs_data) - 80; ?> more Brisbane suburbs
+                    </p>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h2>Ready to Grow Your Home Services Business?</h2>
+                <p>Contact us for a free strategy session to discuss how we can help you generate more leads and grow your revenue.</p>
+                <a href="/contact" class="cta-button">Get Your Free Strategy Session</a>
+            </div>
+        </section>
+        <?php
+        break;
+
+    case 'local-marketing-service':
+        $mkt_service = $page_data['marketing_service'];
+        $business = $page_data['business_type'];
+        $suburb = $page_data['suburb'];
+
+        $mkt_service_name = $mkt_service['name'];
+        $mkt_service_slug = $mkt_service['slug'];
+        $business_name = $business['name'];
+        $business_slug = $business['slug'];
+        $suburb_name = $suburb['name'];
+        $suburb_postcode = $suburb['postcode'];
+        $industry = $business['industry'];
+        ?>
+        <!-- Marketing Service Hero Section -->
+        <section class="local-hero">
+            <div class="container">
+                <h1><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h1>
+                <p class="local-subtitle">Generate More Leads for Your <?php echo $business['singular']; ?> in <?php echo $suburb_name; ?>, Brisbane</p>
+                <div class="local-trust-badges">
+                    <span>✓ Home Services Specialists</span>
+                    <span>✓ Proven Results</span>
+                    <span>✓ Performance-Based Options</span>
+                    <span>✓ Done-For-You or Advisory</span>
+                </div>
+                <a href="#contact-form" class="cta-button">Get Your Free Strategy Session</a>
+            </div>
+        </section>
+
+        <!-- The Problem - Brain Audit Step 1 -->
+        <section class="local-problem">
+            <div class="container">
+                <h2>Marketing Challenges for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h2>
+                <p>Running a <?php echo strtolower($industry); ?> business in <?php echo $suburb_name; ?> means dealing with:</p>
+                <div class="problem-grid">
+                    <?php
+                    $challenges = array_slice($business['marketing_challenges'], 0, 3);
+                    $challenge_icons = ['📉', '💸', '⏰'];
+                    $challenge_solutions = [
+                        'We understand ' . strtolower($industry) . ' businesses and create marketing strategies that actually work for your industry.',
+                        'Our pricing models align with your business goals - performance-based, fixed investment, or base + commission options available.',
+                        'We handle all the marketing complexity while you focus on running your ' . strtolower($business['singular']) . '.'
+                    ];
+                    foreach ($challenges as $idx => $challenge):
+                    ?>
+                    <div class="problem-item">
+                        <span class="problem-icon"><?php echo $challenge_icons[$idx]; ?></span>
+                        <h3><?php echo ucfirst($challenge); ?></h3>
+                        <p><?php echo $challenge_solutions[$idx]; ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution - Brain Audit Step 2 -->
+        <section class="local-solution">
+            <div class="container">
+                <h2>How <?php echo $mkt_service_name; ?> Helps <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h2>
+                <p><?php echo $mkt_service['description']; ?>. Perfect for <?php echo strtolower($business_name); ?> in the <?php echo $suburb_name; ?> area.</p>
+                <div class="services-grid">
+                    <?php foreach (array_slice($mkt_service['benefits'], 0, 4) as $benefit): ?>
+                    <div class="service-card">
+                        <h3>✓ Benefit</h3>
+                        <p><?php echo $benefit; ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: var(--light-green); border-radius: 10px;">
+                    <p style="font-size: 1.1rem; color: var(--text-dark); margin-bottom: 0.5rem;"><strong>Pricing:</strong> <?php echo $mkt_service['pricing_model']; ?></p>
+                    <p style="color: var(--text-gray); margin: 0;"><strong>Ideal For:</strong> <?php echo $mkt_service['ideal_for']; ?></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Target Profile - Brain Audit Step 3 -->
+        <section class="local-target">
+            <div class="container-narrow">
+                <h2>Is This Right for Your <?php echo $business['singular']; ?>?</h2>
+                <p>Our <?php echo strtolower($mkt_service_name); ?> services in <?php echo $suburb_name; ?> are perfect for:</p>
+                <ul class="target-list">
+                    <li><strong>Established Businesses</strong> - <?php echo ucfirst($business_name); ?> in <?php echo $suburb_name; ?> doing <?php echo $business['annual_revenue_range']; ?> annually</li>
+                    <li><strong>Growth-Focused Owners</strong> - Ready to invest in marketing that generates measurable results</li>
+                    <li><strong>Businesses With Capacity</strong> - Can handle more work if you had consistent lead flow</li>
+                    <li><strong>Quality Over Price</strong> - Compete on service quality, not just being the cheapest option</li>
+                </ul>
+                <div style="background: var(--white); padding: 2rem; border-radius: 10px; margin-top: 2rem; border-left: 4px solid var(--primary-green);">
+                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Your Typical Customers:</h3>
+                    <p style="color: var(--text-gray); margin: 0;"><?php echo $business['ideal_customer']; ?></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us - Brain Audit Step 5 (Uniqueness) -->
+        <section class="local-why">
+            <div class="container">
+                <h2>Why <?php echo $business_name; ?> in <?php echo $suburb_name; ?> Work With Us</h2>
+                <div class="why-grid">
+                    <div class="why-item">
+                        <h3>Home Services Specialists</h3>
+                        <p>We only work with trades and home services businesses. We understand your industry, your customers, and what marketing actually works for <?php echo strtolower($business_name); ?>.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Local Market Knowledge</h3>
+                        <p>We know the <?php echo $suburb_name; ?> and Brisbane market. We understand local competition, seasonal demand, and how to target customers in your service area.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Performance-Based Pricing Options</h3>
+                        <p>We offer pricing that aligns with results - pay per lead, base + commission, or fixed investment. You choose what makes sense for your business.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Done-For-You or Advisory</h3>
+                        <p>Want us to handle everything? We do that. Have a team and need expert guidance? We do that too. Flexible support that fits your business.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Focused on $1M+ Businesses</h3>
+                        <p>We specialize in established businesses ready to scale. The marketing that got you to $1M won't get you to $5M - we know what works at your level.</p>
+                    </div>
+                    <div class="why-item">
+                        <h3>Track Everything</h3>
+                        <p>Know exactly where every lead comes from, what you're spending, and your ROI. Transparent reporting so you always know what's working.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Common Questions - Brain Audit Step 4 (Objections) -->
+        <section class="local-faq">
+            <div class="container-narrow">
+                <h2>Common Questions About <?php echo $mkt_service_name; ?> for <?php echo $business_name; ?></h2>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <h3>Do you only work with <?php echo strtolower($business_name); ?> in <?php echo $suburb_name; ?>?</h3>
+                        <p>We work with <?php echo strtolower($business_name); ?> throughout Brisbane, including <?php echo $suburb_name; ?> and surrounding suburbs. We specialize in home services businesses across all trades.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>What size business do you work with?</h3>
+                        <p>We focus on established businesses doing $1M+ in annual revenue. At this level, you have the foundation to invest in sophisticated marketing and the capacity to handle growth.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>How much does <?php echo strtolower($mkt_service_name); ?> cost?</h3>
+                        <p><?php echo $mkt_service['pricing_model']; ?>. We'll discuss pricing options based on your specific goals, current revenue, and growth targets during your free consultation.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Done-for-you or advisory - which is right for me?</h3>
+                        <p><strong>Done-for-you</strong> is best if you want experts handling your marketing while you focus on operations. <strong>Advisory</strong> works if you have someone managing marketing but need expert guidance. We'll help you decide on our call.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>How long before I see results?</h3>
+                        <p>With <?php echo strtolower($mkt_service_name); ?>, most <?php echo strtolower($business_name); ?> see initial results within 30-60 days. We'll set realistic expectations based on your market, competition, and current marketing foundation.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>Do you work with other <?php echo strtolower($industry); ?> businesses?</h3>
+                        <p>Yes! We work with multiple <?php echo strtolower($business_name); ?> in different service areas. We won't work with direct competitors in the same suburbs, but we apply learnings from the industry to benefit all clients.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action - Brain Audit Step 9 -->
+        <section class="local-cta" id="contact-form">
+            <div class="container-narrow">
+                <h2>Ready to Grow Your <?php echo $business['singular']; ?> in <?php echo $suburb_name; ?>?</h2>
+                <p>Book a free strategy session to discuss how <?php echo strtolower($mkt_service_name); ?> can generate more qualified leads for your business. No pressure, no commitments - just an honest conversation about what's working, what's not, and how we can help.</p>
+
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <h3>📞 Call Now</h3>
+                        <p><a href="tel:1300000000">1300 000 000</a></p>
+                        <p class="small">Mon-Fri 9am-5pm AEST</p>
+                    </div>
+                    <div class="contact-method">
+                        <h3>📧 Email Us</h3>
+                        <p><a href="mailto:hello@leadstoprofit.com">hello@leadstoprofit.com</a></p>
+                        <p class="small">We respond within 24 hours</p>
+                    </div>
+                </div>
+
+                <div id="cbox-hNPWgg4AnfbXuzSE" style="margin-top: 2rem;"></div>
+
+                <p style="text-align: center; margin-top: 2rem; color: rgba(255,255,255,0.9); font-size: 0.95rem;">
+                    <strong>Free Strategy Session Includes:</strong> Marketing audit, competitor analysis, and customized growth roadmap for your <?php echo strtolower($business['singular']); ?>
+                </p>
+            </div>
+        </section>
+
+        <!-- Local Area Info -->
+        <section class="local-area-info">
+            <div class="container">
+                <h2><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> Across Brisbane</h2>
+                <p>We help <?php echo strtolower($business_name); ?> in <?php echo $suburb_name; ?> (<?php echo $suburb_postcode; ?>) and throughout Brisbane generate more leads and grow their revenue. Whether you're established in <?php echo $suburb_name; ?> or servicing the broader Brisbane area, we understand the local market and what works for <?php echo strtolower($industry); ?> businesses.</p>
+
+                <h3>Other Marketing Services for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h3>
+                <div class="related-services">
+                    <?php
+                    // Display other marketing services for this business type in this suburb
+                    $other_services = array_slice($marketing_services_data, 0, 8);
+                    foreach ($other_services as $other_svc):
+                        if ($other_svc['slug'] !== $mkt_service_slug):
+                            $link_url = '/' . $other_svc['slug'] . '-for-' . $business_slug . '-in-' . $suburb['slug'];
+                    ?>
+                        <a href="<?php echo $link_url; ?>" class="related-service-link"><?php echo $other_svc['name']; ?> for <?php echo $business_name; ?></a>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </div>
+
+                <h3><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> in Other Brisbane Suburbs</h3>
+                <div class="nearby-suburbs">
+                    <?php
+                    // Display same service for same business in other suburbs
+                    $random_suburbs = array_rand($suburbs_by_slug, min(20, count($suburbs_by_slug)));
+                    if (!is_array($random_suburbs)) $random_suburbs = [$random_suburbs];
+
+                    foreach ($random_suburbs as $idx => $random_suburb_slug):
+                        $random_suburb = $suburbs_by_slug[$random_suburb_slug];
+                        if ($random_suburb['slug'] !== $suburb['slug']):
+                            $link_url = '/' . $mkt_service_slug . '-for-' . $business_slug . '-in-' . $random_suburb['slug'];
+                    ?>
+                        <a href="<?php echo $link_url; ?>" class="suburb-link"><?php echo $random_suburb['name']; ?></a>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </div>
+
+                <h3>Other Home Services Businesses We Help in <?php echo $suburb_name; ?></h3>
+                <div class="nearby-suburbs">
+                    <?php
+                    // Display same service for other business types in this suburb
+                    foreach (array_slice($business_types_data, 0, 15) as $other_biz):
+                        if ($other_biz['slug'] !== $business_slug):
+                            $link_url = '/' . $mkt_service_slug . '-for-' . $other_biz['slug'] . '-in-' . $suburb['slug'];
+                    ?>
+                        <a href="<?php echo $link_url; ?>" class="suburb-link"><?php echo $other_biz['name']; ?></a>
+                    <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- Local SEO Schema -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            "name": "<?php echo SITE_NAME; ?> - <?php echo $mkt_service_name; ?> for <?php echo $business_name; ?>",
+            "image": "<?php echo SITE_URL; ?>/logo.png",
+            "@id": "<?php echo SITE_URL . $request_uri; ?>",
+            "url": "<?php echo SITE_URL . $request_uri; ?>",
+            "telephone": "1300-000-000",
+            "email": "hello@leadstoprofit.com",
+            "priceRange": "$$-$$$",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Brisbane",
+                "addressRegion": "QLD",
+                "addressCountry": "AU"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -27.4705,
+                "longitude": 153.0260
+            },
+            "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                ],
+                "opens": "09:00",
+                "closes": "17:00"
+            },
+            "areaServed": [{
+                "@type": "City",
+                "name": "<?php echo $suburb_name; ?>"
+            }, {
+                "@type": "City",
+                "name": "Brisbane"
+            }],
+            "serviceType": "<?php echo $mkt_service_name; ?>",
+            "description": "<?php echo addslashes($page_data['description']); ?>",
+            "audience": {
+                "@type": "BusinessAudience",
+                "name": "<?php echo $business_name; ?> in <?php echo $suburb_name; ?>, Brisbane"
+            }
+        }
+        </script>
         <?php
         break;
 
@@ -1387,6 +1946,416 @@ $content = ob_get_clean();
         .lp-legal {
             padding: 3rem 2rem;
             background-color: var(--background);
+        }
+
+        /* Services Directory Styles */
+        .directory-section,
+        .directory-suburbs {
+            padding: 5rem 2rem;
+        }
+
+        .directory-section {
+            background-color: var(--white);
+        }
+
+        .directory-suburbs {
+            background-color: var(--background);
+        }
+
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .directory-category {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .directory-category h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 0.5rem;
+        }
+
+        .directory-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .service-dropdown {
+            cursor: pointer;
+            padding: 0.8rem;
+            background: var(--background);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .service-dropdown:hover {
+            background: var(--light-green);
+        }
+
+        .service-dropdown summary {
+            font-weight: 600;
+            color: var(--text-dark);
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .service-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .service-dropdown summary::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 0.5rem;
+            transition: transform 0.3s;
+            color: var(--primary-green);
+        }
+
+        .service-dropdown[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .suburb-links,
+        .suburb-service-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .suburb-links a,
+        .suburb-service-links a {
+            display: inline-block;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 0.4rem 0.8rem;
+            border-radius: 3px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .suburb-links a:hover,
+        .suburb-service-links a:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        .more-suburbs,
+        .more-services {
+            color: var(--text-gray);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .suburbs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .suburb-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .suburb-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,166,81,0.2);
+        }
+
+        .suburb-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .suburb-card .postcode {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .suburb-card > p {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        /* Local Service Page Styles */
+        .local-hero {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .local-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .local-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .local-trust-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .local-trust-badges span {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .local-problem,
+        .local-solution,
+        .local-why,
+        .local-area-info {
+            padding: 5rem 2rem;
+        }
+
+        .local-problem {
+            background-color: var(--white);
+        }
+
+        .local-solution {
+            background-color: var(--background);
+        }
+
+        .local-why {
+            background-color: var(--light-green);
+        }
+
+        .local-area-info {
+            background-color: var(--white);
+        }
+
+        .local-problem h2,
+        .local-solution h2,
+        .local-why h2,
+        .local-area-info h2 {
+            text-align: center;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+        }
+
+        .local-problem > .container > p,
+        .local-solution > .container > p {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 3rem;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .problem-item {
+            text-align: center;
+        }
+
+        .problem-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .problem-item h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .problem-item p {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .local-target {
+            padding: 5rem 2rem;
+            background-color: var(--white);
+        }
+
+        .local-target h2 {
+            text-align: center;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .local-target > div > p {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+
+        .target-list {
+            list-style: none;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .target-list li {
+            padding: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-gray);
+            line-height: 1.8;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .target-list li:last-child {
+            border-bottom: none;
+        }
+
+        .target-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .local-faq {
+            padding: 5rem 2rem;
+            background-color: var(--background);
+        }
+
+        .local-faq h2 {
+            text-align: center;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: 3rem;
+            color: var(--primary-green);
+        }
+
+        .local-cta {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
+        }
+
+        .local-cta h2 {
+            text-align: center;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .local-cta > div > p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .contact-method {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .contact-method h3 {
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-method p {
+            margin: 0.5rem 0;
+        }
+
+        .contact-method a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .contact-method a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-method .small {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .local-area-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary-green);
+            margin: 3rem 0 1.5rem;
+        }
+
+        .local-area-info p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .related-services,
+        .nearby-suburbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .related-service-link,
+        .suburb-link {
+            display: inline-block;
+            background: var(--light-green);
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border: 1px solid var(--primary-green);
+        }
+
+        .related-service-link:hover,
+        .suburb-link:hover {
+            background: var(--primary-green);
+            color: var(--white);
+            transform: translateY(-2px);
         }
 
         /* Footer */

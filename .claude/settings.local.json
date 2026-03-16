@@ -6,7 +6,9 @@
       "Bash(sqlite3:*)",
       "WebFetch(domain:leadstoprofit.com.au)",
       "mcp__ide__getDiagnostics",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(mkdir:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
