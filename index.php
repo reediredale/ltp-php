@@ -874,8 +874,8 @@ switch ($page_data['template']) {
                 <div class="services-grid">
                     <?php foreach (array_slice($mkt_service['benefits'], 0, 4) as $benefit): ?>
                     <div class="service-card">
-                        <h3>✓ Benefit</h3>
-                        <p><?php echo $benefit; ?></p>
+                        <h3>✓ <?php echo $benefit['headline']; ?></h3>
+                        <p><?php echo $benefit['description']; ?></p>
                     </div>
                     <?php endforeach; ?>
                 </div>
