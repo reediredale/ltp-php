@@ -1,6 +1,6 @@
-# Database
-/data/
+# Database files (but keep JSON data files)
 *.db
+/data/*.db
 
 # Logs
 *.log

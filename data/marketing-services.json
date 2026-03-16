@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "lead-generation",
+    "name": "Lead Generation",
+    "category": "Lead Generation",
+    "description": "Multi-channel lead generation campaigns that fill your pipeline with qualified prospects ready to book",
+    "benefits": [
+      "Get a predictable flow of qualified leads every week - no more feast or famine cycles",
+      "Only pay for results that matter - leads you can actually convert into paying customers",
+      "Multi-channel campaigns (Google, Facebook, SEO) working together to maximize lead volume",
+      "Complete lead management system - capture, qualify, and nurture leads until they book"
+    ],
+    "pricing_model": "Pay per lead or base + performance commission",
+    "ideal_for": "Businesses ready to scale with consistent lead flow"
+  },
+  {
+    "slug": "meta-ads",
+    "name": "Meta Ads",
+    "category": "Paid Advertising",
+    "description": "Facebook and Instagram advertising that reaches homeowners and property managers in your service area",
+    "benefits": [
+      "Target homeowners in specific suburbs who need your services right now",
+      "Build brand recognition so customers call you first when they need work done",
+      "Retarget website visitors who didn't call - stay top-of-mind until they're ready to book",
+      "Lower cost per lead than Google Ads while building long-term brand awareness"
+    ],
+    "pricing_model": "Fixed investment or percentage of ad spend",
+    "ideal_for": "Building brand awareness and generating consistent lead flow"
+  },
+  {
+    "slug": "google-ads",
+    "name": "Google Ads",
+    "category": "Paid Advertising",
+    "description": "Search advertising that captures high-intent customers actively searching for your services right now",
+    "benefits": [
+      "Appear at the top of Google when customers search for your services in your area",
+      "Capture high-intent leads - people actively looking to hire someone today",
+      "Only pay when someone clicks - no wasted budget on people who aren't interested",
+      "Track every dollar spent and every lead generated - know exactly what you're getting for your money"
+    ],
+    "pricing_model": "Performance-based or fixed monthly investment",
+    "ideal_for": "Businesses wanting immediate visibility and qualified leads"
+  },
+  {
+    "slug": "conversion-optimization",
+    "name": "Conversion Rate Optimisation",
+    "category": "Optimization",
+    "description": "Turn more website visitors into phone calls and booked jobs without spending more on advertising",
+    "benefits": [
+      "Get more leads from the same traffic - turn website visitors into phone calls and bookings",
+      "Reduce wasted ad spend by converting more of the clicks you're already paying for",
+      "A/B test what actually works for your customers - stop guessing, start knowing",
+      "Improve every touchpoint - from ad click to phone call to booked job"
+    ],
+    "pricing_model": "Fixed project or monthly optimization retainer",
+    "ideal_for": "Businesses getting traffic but not enough conversions"
+  },
+  {
+    "slug": "email-marketing",
+    "name": "Email Marketing",
+    "category": "Email Marketing",
+    "description": "Stay top-of-mind with past customers and nurture leads who aren't ready to book yet",
+    "benefits": [
+      "Turn one-time customers into repeat customers - stay in touch for their next project",
+      "Nurture leads who got a quote but didn't book - automated follow-up until they're ready",
+      "Seasonal promotions to past customers - fill slow periods with repeat business",
+      "Automated sequences that run on autopilot - set it up once, generate revenue for years"
+    ],
+    "pricing_model": "Setup fee plus monthly management",
+    "ideal_for": "Building repeat business and nurturing leads"
+  },
+  {
+    "slug": "strategy-consulting",
+    "name": "Strategy & Consulting",
+    "category": "Strategy",
+    "description": "Expert marketing guidance for home services businesses without hiring a full-time marketing manager",
+    "benefits": [
+      "Get a clear roadmap from where you are now to your revenue goals - no more guessing",
+      "Fix what's not working in your current marketing before spending more money",
+      "Expert guidance specific to home services - we know what works for your industry",
+      "Done-for-you or train your team - flexible support that fits your business model"
+    ],
+    "pricing_model": "Hourly, monthly retainer, or project-based",
+    "ideal_for": "Business owners who want strategic direction"
+  }
+]

@@ -1,0 +1,262 @@
+[
+  {
+    "slug": "plumbers",
+    "name": "Plumbers",
+    "singular": "Plumbing Business",
+    "industry": "Plumbing",
+    "annual_revenue_range": "$500K - $5M+",
+    "typical_services": ["Emergency plumbing", "Blocked drains", "Hot water systems", "Gas fitting", "Bathroom renovations"],
+    "marketing_challenges": ["High competition", "Emergency vs scheduled work mix", "Seasonal demand", "Price-sensitive customers"],
+    "ideal_customer": "Homeowners and property managers needing reliable plumbers"
+  },
+  {
+    "slug": "electricians",
+    "name": "Electricians",
+    "singular": "Electrical Business",
+    "industry": "Electrical",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["Electrical repairs", "Switchboard upgrades", "Air conditioning electrical", "Solar installation", "Emergency callouts"],
+    "marketing_challenges": ["Licensing complexity", "Safety perception", "High competition", "Diverse service offerings"],
+    "ideal_customer": "Homeowners and businesses needing licensed electrical work"
+  },
+  {
+    "slug": "hvac-companies",
+    "name": "HVAC Companies",
+    "singular": "HVAC Business",
+    "industry": "HVAC",
+    "annual_revenue_range": "$600K - $6M+",
+    "typical_services": ["Air conditioning installation", "AC repairs", "Ducted systems", "Split systems", "Maintenance contracts"],
+    "marketing_challenges": ["Seasonal demand peaks", "High ticket sales", "Long sales cycles", "Service vs installation balance"],
+    "ideal_customer": "Homeowners and businesses needing climate control systems"
+  },
+  {
+    "slug": "roofers",
+    "name": "Roofers",
+    "singular": "Roofing Business",
+    "industry": "Roofing",
+    "annual_revenue_range": "$500K - $5M+",
+    "typical_services": ["Roof repairs", "Roof replacements", "Gutter installation", "Roof restoration", "Storm damage"],
+    "marketing_challenges": ["Weather dependent", "High competition", "Insurance work", "Credibility concerns"],
+    "ideal_customer": "Homeowners with roof issues or renovating properties"
+  },
+  {
+    "slug": "builders",
+    "name": "Builders",
+    "singular": "Building Business",
+    "industry": "Construction",
+    "annual_revenue_range": "$1M - $10M+",
+    "typical_services": ["Home extensions", "Renovations", "New builds", "Granny flats", "Commercial construction"],
+    "marketing_challenges": ["Long sales cycles", "High project values", "Trust and credibility", "Referral dependency"],
+    "ideal_customer": "Homeowners planning extensions, renovations, or new builds"
+  },
+  {
+    "slug": "carpenters",
+    "name": "Carpenters",
+    "singular": "Carpentry Business",
+    "industry": "Carpentry",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Decking", "Pergolas", "Kitchen installation", "Custom joinery", "Renovations"],
+    "marketing_challenges": ["Commoditization", "Price competition", "Feast or famine workflow", "Portfolio visibility"],
+    "ideal_customer": "Homeowners wanting outdoor areas or custom carpentry work"
+  },
+  {
+    "slug": "painters",
+    "name": "Painters",
+    "singular": "Painting Business",
+    "industry": "Painting",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["House painting", "Commercial painting", "Interior painting", "Exterior painting", "Roof painting"],
+    "marketing_challenges": ["Extreme price competition", "Quality differentiation", "Weather dependent", "Low barriers to entry"],
+    "ideal_customer": "Homeowners and property managers needing quality painting"
+  },
+  {
+    "slug": "landscapers",
+    "name": "Landscapers",
+    "singular": "Landscaping Business",
+    "industry": "Landscaping",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["Garden design", "Lawn care", "Paving", "Retaining walls", "Irrigation"],
+    "marketing_challenges": ["Seasonal peaks", "Weather dependent", "Service vs project mix", "Upsell opportunities"],
+    "ideal_customer": "Homeowners wanting beautiful outdoor spaces"
+  },
+  {
+    "slug": "pest-control",
+    "name": "Pest Control",
+    "singular": "Pest Control Business",
+    "industry": "Pest Management",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Termite inspections", "Pest treatments", "Rodent control", "Preventative treatments"],
+    "marketing_challenges": ["Reactive buying behavior", "Seasonal demand", "Education needed", "Recurring revenue opportunities"],
+    "ideal_customer": "Homeowners and property managers with pest concerns"
+  },
+  {
+    "slug": "pool-builders",
+    "name": "Pool Builders",
+    "singular": "Pool Building Business",
+    "industry": "Pools",
+    "annual_revenue_range": "$1M - $10M+",
+    "typical_services": ["Pool construction", "Pool renovations", "Pool servicing", "Equipment installation"],
+    "marketing_challenges": ["High ticket sales", "Long sales cycles", "Seasonal interest", "Financing requirements"],
+    "ideal_customer": "Homeowners planning to install or renovate swimming pools"
+  },
+  {
+    "slug": "concreters",
+    "name": "Concreters",
+    "singular": "Concreting Business",
+    "industry": "Concrete",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["Driveways", "Patios", "Slabs", "Footpaths", "Decorative concrete"],
+    "marketing_challenges": ["Price competition", "Weather dependent", "Commercial vs residential", "Project lumpy cash flow"],
+    "ideal_customer": "Homeowners and developers needing concrete work"
+  },
+  {
+    "slug": "tilers",
+    "name": "Tilers",
+    "singular": "Tiling Business",
+    "industry": "Tiling",
+    "annual_revenue_range": "$250K - $2.5M+",
+    "typical_services": ["Floor tiling", "Wall tiling", "Bathroom tiling", "Kitchen splashbacks", "Waterproofing"],
+    "marketing_challenges": ["Tied to building cycles", "Contractor relationships", "Direct customer acquisition", "Portfolio showcase"],
+    "ideal_customer": "Homeowners renovating bathrooms and kitchens"
+  },
+  {
+    "slug": "locksmiths",
+    "name": "Locksmiths",
+    "singular": "Locksmith Business",
+    "industry": "Security",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Emergency lockouts", "Lock installation", "Security systems", "Safe services", "Rekeying"],
+    "marketing_challenges": ["Emergency vs scheduled", "Trust and credibility", "24/7 availability", "Scam locksmith reputation"],
+    "ideal_customer": "Homeowners and businesses needing security services"
+  },
+  {
+    "slug": "cleaners",
+    "name": "Cleaners",
+    "singular": "Cleaning Business",
+    "industry": "Cleaning",
+    "annual_revenue_range": "$200K - $2M+",
+    "typical_services": ["House cleaning", "End of lease cleaning", "Carpet cleaning", "Commercial cleaning", "Window cleaning"],
+    "marketing_challenges": ["Staff retention", "Low margins", "High competition", "Recurring vs one-off"],
+    "ideal_customer": "Busy homeowners and property managers needing regular cleaning"
+  },
+  {
+    "slug": "arborists",
+    "name": "Arborists",
+    "singular": "Tree Services Business",
+    "industry": "Tree Services",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Tree removal", "Tree pruning", "Stump grinding", "Emergency tree work", "Arborist reports"],
+    "marketing_challenges": ["Weather dependent", "Safety concerns", "Insurance requirements", "Seasonal demand"],
+    "ideal_customer": "Property owners with tree maintenance or removal needs"
+  },
+  {
+    "slug": "security-installers",
+    "name": "Security Installers",
+    "singular": "Security Installation Business",
+    "industry": "Security",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["CCTV installation", "Alarm systems", "Access control", "Intercom systems", "Monitoring services"],
+    "marketing_challenges": ["Technology changes", "Recurring revenue balance", "Installation vs monitoring", "Trust building"],
+    "ideal_customer": "Homeowners and businesses wanting security solutions"
+  },
+  {
+    "slug": "bathroom-renovators",
+    "name": "Bathroom Renovators",
+    "singular": "Bathroom Renovation Business",
+    "industry": "Renovation",
+    "annual_revenue_range": "$500K - $5M+",
+    "typical_services": ["Complete bathroom renovations", "Bathroom design", "Tiling and waterproofing", "Fixture installation"],
+    "marketing_challenges": ["High ticket sales", "Long sales cycles", "Coordination complexity", "Portfolio showcasing"],
+    "ideal_customer": "Homeowners planning bathroom renovations"
+  },
+  {
+    "slug": "kitchen-renovators",
+    "name": "Kitchen Renovators",
+    "singular": "Kitchen Renovation Business",
+    "industry": "Renovation",
+    "annual_revenue_range": "$600K - $6M+",
+    "typical_services": ["Kitchen renovations", "Kitchen design", "Cabinet installation", "Benchtop installation"],
+    "marketing_challenges": ["Very high ticket sales", "Long decision cycles", "Design consultation needed", "Multiple trades coordination"],
+    "ideal_customer": "Homeowners planning kitchen renovations"
+  },
+  {
+    "slug": "solar-installers",
+    "name": "Solar Installers",
+    "singular": "Solar Installation Business",
+    "industry": "Solar",
+    "annual_revenue_range": "$500K - $5M+",
+    "typical_services": ["Solar panel installation", "Battery storage", "Solar hot water", "System monitoring"],
+    "marketing_challenges": ["Government incentive changes", "High ticket sales", "Technical education needed", "Financing options"],
+    "ideal_customer": "Homeowners wanting to reduce electricity bills with solar"
+  },
+  {
+    "slug": "garage-door-companies",
+    "name": "Garage Door Companies",
+    "singular": "Garage Door Business",
+    "industry": "Garage Doors",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Garage door installation", "Repairs", "Automation", "Roller doors", "Sectional doors"],
+    "marketing_challenges": ["Reactive buying", "Limited differentiation", "Installation vs repair balance", "Emergency services"],
+    "ideal_customer": "Homeowners needing garage door installation or repairs"
+  },
+  {
+    "slug": "fencing-contractors",
+    "name": "Fencing Contractors",
+    "singular": "Fencing Business",
+    "industry": "Fencing",
+    "annual_revenue_range": "$300K - $3M+",
+    "typical_services": ["Timber fencing", "Colorbond fencing", "Glass pool fencing", "Gates", "Fence repairs"],
+    "marketing_challenges": ["Price competition", "Material cost fluctuations", "Council regulations", "Neighbor disputes"],
+    "ideal_customer": "Homeowners needing new fences or fence repairs"
+  },
+  {
+    "slug": "appliance-repair",
+    "name": "Appliance Repair",
+    "singular": "Appliance Repair Business",
+    "industry": "Appliance Repair",
+    "annual_revenue_range": "$200K - $2M+",
+    "typical_services": ["Washing machine repair", "Fridge repair", "Oven repair", "Dishwasher repair"],
+    "marketing_challenges": ["Repair vs replace decision", "Parts availability", "Diverse brands and models", "Diagnostic complexity"],
+    "ideal_customer": "Homeowners with broken appliances"
+  },
+  {
+    "slug": "flooring-companies",
+    "name": "Flooring Companies",
+    "singular": "Flooring Business",
+    "industry": "Flooring",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["Timber flooring", "Vinyl flooring", "Carpet installation", "Floor sanding", "Polished concrete"],
+    "marketing_challenges": ["Sample showing logistics", "Tied to renovation cycles", "Product vs installation pricing", "Material selection complexity"],
+    "ideal_customer": "Homeowners renovating and needing new flooring"
+  },
+  {
+    "slug": "rendering-companies",
+    "name": "Rendering Companies",
+    "singular": "Rendering Business",
+    "industry": "Rendering",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["House rendering", "Acrylic rendering", "Texture coating", "Render repairs"],
+    "marketing_challenges": ["Weather dependent", "High competition", "Price pressure", "Quality perception"],
+    "ideal_customer": "Homeowners wanting to update home exterior appearance"
+  },
+  {
+    "slug": "window-companies",
+    "name": "Window Companies",
+    "singular": "Window Business",
+    "industry": "Windows",
+    "annual_revenue_range": "$400K - $4M+",
+    "typical_services": ["Window installation", "Window replacement", "Security screens", "Fly screens", "Glass repair"],
+    "marketing_challenges": ["High ticket sales", "Measure and quote complexity", "Installation coordination", "Energy efficiency education"],
+    "ideal_customer": "Homeowners replacing old windows or securing their property"
+  },
+  {
+    "slug": "handyman-services",
+    "name": "Handyman Services",
+    "singular": "Handyman Business",
+    "industry": "General Maintenance",
+    "annual_revenue_range": "$150K - $1.5M+",
+    "typical_services": ["General repairs", "Maintenance", "Minor renovations", "Assembly", "Odd jobs"],
+    "marketing_challenges": ["Price competition", "Scope creep", "Licensing restrictions", "Diverse skills needed"],
+    "ideal_customer": "Homeowners and property managers needing general maintenance"
+  }
+]
