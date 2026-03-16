@@ -8,7 +8,8 @@
       "mcp__ide__getDiagnostics",
       "Bash(curl:*)",
       "Bash(mkdir:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
