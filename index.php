@@ -98,7 +98,7 @@ if ($request_uri === '/sitemap.xml') {
         }
     }
 
-    $total_programmatic = count($marketing_services_data) * count($business_types_data) * count($suburbs_data);
+    $total_programmatic = count($marketing_services_data) * count($business_types_data);
     $total_urls = count($static_urls) + $total_programmatic;
     $urls_per_sitemap = 50000;
     $num_sitemaps = ceil($total_urls / $urls_per_sitemap);
@@ -146,14 +146,12 @@ if (preg_match('/^\/sitemap-(\d+)\.xml$/', $request_uri, $matches)) {
     // Add programmatic SEO pages
     foreach ($marketing_services_data as $marketing_service) {
         foreach ($business_types_data as $business_type) {
-            foreach ($suburbs_data as $suburb) {
-                $url = '/' . $marketing_service['slug'] . '-for-' . $business_type['slug'] . '-in-' . $suburb['slug'];
-                $all_urls[] = [
-                    'loc' => SITE_URL . $url,
-                    'changefreq' => 'monthly',
-                    'priority' => '0.7'
-                ];
-            }
+            $url = '/' . $marketing_service['slug'] . '-for-' . $business_type['slug'];
+            $all_urls[] = [
+                'loc' => SITE_URL . $url,
+                'changefreq' => 'monthly',
+                'priority' => '0.7'
+            ];
         }
     }
 
@@ -173,39 +171,57 @@ if (preg_match('/^\/sitemap-(\d+)\.xml$/', $request_uri, $matches)) {
     exit;
 }
 
-// Check for programmatic SEO pages (marketing-service-for-business-in-suburb pattern)
+// Handle 301 redirects from old suburb-based URLs to new consolidated URLs
+$uri_path = trim($request_uri, '/');
+if (strpos($uri_path, '-for-') !== false && strpos($uri_path, '-in-') !== false) {
+    // This is an old suburb-based URL, redirect to new format
+    $for_parts = explode('-for-', $uri_path, 2);
+    if (count($for_parts) === 2) {
+        $marketing_slug_candidate = $for_parts[0];
+        $in_parts = explode('-in-', $for_parts[1], 2);
+        if (count($in_parts) === 2) {
+            $business_slug_candidate = $in_parts[0];
+            $suburb_slug_candidate = $in_parts[1];
+
+            // Verify this was a valid old URL before redirecting
+            if (isset($marketing_services_by_slug[$marketing_slug_candidate]) &&
+                isset($business_types_by_slug[$business_slug_candidate]) &&
+                isset($suburbs_by_slug[$suburb_slug_candidate])) {
+
+                // Redirect to new URL without suburb
+                $new_url = '/' . $marketing_slug_candidate . '-for-' . $business_slug_candidate;
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: ' . $new_url);
+                exit;
+            }
+        }
+    }
+}
+
+// Check for programmatic SEO pages (marketing-service-for-business pattern)
 $is_local_seo_page = false;
 $marketing_service = null;
 $business_type = null;
-$local_suburb = null;
 
 if (!isset($routes[$request_uri])) {
-    // Try to match marketing-service-for-business-in-suburb pattern
+    // Try to match marketing-service-for-business pattern
     $uri_path = trim($request_uri, '/');
 
-    // Check if URL contains both "-for-" and "-in-"
-    if (strpos($uri_path, '-for-') !== false && strpos($uri_path, '-in-') !== false) {
-        // Split by "-for-" first
+    // Check if URL contains "-for-"
+    if (strpos($uri_path, '-for-') !== false) {
+        // Split by "-for-"
         $for_parts = explode('-for-', $uri_path, 2);
         if (count($for_parts) === 2) {
             $marketing_slug_candidate = $for_parts[0];
+            $business_slug_candidate = $for_parts[1];
 
-            // Split the remainder by "-in-"
-            $in_parts = explode('-in-', $for_parts[1], 2);
-            if (count($in_parts) === 2) {
-                $business_slug_candidate = $in_parts[0];
-                $suburb_slug_candidate = $in_parts[1];
+            // Verify both parts exist in our data
+            if (isset($marketing_services_by_slug[$marketing_slug_candidate]) &&
+                isset($business_types_by_slug[$business_slug_candidate])) {
 
-                // Verify all three parts exist in our data
-                if (isset($marketing_services_by_slug[$marketing_slug_candidate]) &&
-                    isset($business_types_by_slug[$business_slug_candidate]) &&
-                    isset($suburbs_by_slug[$suburb_slug_candidate])) {
-
-                    $is_local_seo_page = true;
-                    $marketing_service = $marketing_services_by_slug[$marketing_slug_candidate];
-                    $business_type = $business_types_by_slug[$business_slug_candidate];
-                    $local_suburb = $suburbs_by_slug[$suburb_slug_candidate];
-                }
+                $is_local_seo_page = true;
+                $marketing_service = $marketing_services_by_slug[$marketing_slug_candidate];
+                $business_type = $business_types_by_slug[$business_slug_candidate];
             }
         }
     }
@@ -215,12 +231,11 @@ if (!isset($routes[$request_uri])) {
 if ($is_local_seo_page) {
     // Create page data for local marketing service page
     $page_data = [
-        'title' => $marketing_service['name'] . ' for ' . $business_type['name'] . ' in ' . $local_suburb['name'] . ', Brisbane',
-        'description' => $marketing_service['name'] . ' services for ' . strtolower($business_type['name']) . ' in ' . $local_suburb['name'] . ', Brisbane. ' . $marketing_service['description'] . '. Get qualified leads and grow your business.',
+        'title' => $marketing_service['name'] . ' for ' . $business_type['name'] . ' in Brisbane',
+        'description' => $marketing_service['name'] . ' services for ' . strtolower($business_type['name']) . ' in Brisbane. ' . $marketing_service['description'] . '. Get qualified leads and grow your business.',
         'template' => 'local-marketing-service',
         'marketing_service' => $marketing_service,
-        'business_type' => $business_type,
-        'suburb' => $local_suburb
+        'business_type' => $business_type
     ];
 } elseif (!isset($routes[$request_uri])) {
     http_response_code(404);
@@ -705,7 +720,7 @@ switch ($page_data['template']) {
         <section class="directory-section">
             <div class="container">
                 <h2 class="section-title">Browse by Marketing Service</h2>
-                <p class="section-subtitle">Select a marketing service to see which businesses and suburbs we serve</p>
+                <p class="section-subtitle">Select a marketing service to see which businesses we serve</p>
 
                 <div class="directory-grid">
                     <?php
@@ -731,8 +746,7 @@ switch ($page_data['template']) {
                                             <?php
                                             $display_businesses = array_slice($business_types_data, 0, 10);
                                             foreach ($display_businesses as $biz):
-                                                // Link to first suburb as an example
-                                                $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'] . '-in-' . $suburbs_data[0]['slug'];
+                                                $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'];
                                             ?>
                                                 <a href="<?php echo $url; ?>">For <?php echo $biz['name']; ?></a>
                                             <?php endforeach; ?>
@@ -768,7 +782,7 @@ switch ($page_data['template']) {
                                     <?php
                                     $display_services = array_slice($marketing_services_data, 0, 6);
                                     foreach ($display_services as $mkt_svc):
-                                        $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'] . '-in-' . $suburbs_data[0]['slug'];
+                                        $url = '/' . $mkt_svc['slug'] . '-for-' . $biz['slug'];
                                     ?>
                                         <a href="<?php echo $url; ?>"><?php echo $mkt_svc['name']; ?></a>
                                     <?php endforeach; ?>
@@ -778,27 +792,6 @@ switch ($page_data['template']) {
                         </div>
                     <?php endforeach; ?>
                 </div>
-            </div>
-        </section>
-
-        <section class="directory-suburbs" style="background: var(--white);">
-            <div class="container">
-                <h2 class="section-title">Brisbane Suburbs We Serve</h2>
-                <p class="section-subtitle">Marketing services for home services businesses across all Brisbane suburbs</p>
-
-                <div style="margin-top: 2rem; columns: 4; column-gap: 2rem;">
-                    <?php foreach (array_slice($suburbs_data, 0, 80) as $suburb): ?>
-                        <p style="margin: 0.3rem 0; color: var(--text-gray); break-inside: avoid;">
-                            <?php echo $suburb['name']; ?> (<?php echo $suburb['postcode']; ?>)
-                        </p>
-                    <?php endforeach; ?>
-                </div>
-
-                <?php if (count($suburbs_data) > 80): ?>
-                    <p style="text-align: center; margin-top: 2rem; color: var(--text-gray);">
-                        ...and <?php echo count($suburbs_data) - 80; ?> more Brisbane suburbs
-                    </p>
-                <?php endif; ?>
             </div>
         </section>
 
@@ -815,21 +808,18 @@ switch ($page_data['template']) {
     case 'local-marketing-service':
         $mkt_service = $page_data['marketing_service'];
         $business = $page_data['business_type'];
-        $suburb = $page_data['suburb'];
 
         $mkt_service_name = $mkt_service['name'];
         $mkt_service_slug = $mkt_service['slug'];
         $business_name = $business['name'];
         $business_slug = $business['slug'];
-        $suburb_name = $suburb['name'];
-        $suburb_postcode = $suburb['postcode'];
         $industry = $business['industry'];
         ?>
         <!-- Marketing Service Hero Section -->
         <section class="local-hero">
             <div class="container">
-                <h1><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h1>
-                <p class="local-subtitle">Generate More Leads for Your <?php echo $business['singular']; ?> in <?php echo $suburb_name; ?>, Brisbane</p>
+                <h1><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> in Brisbane</h1>
+                <p class="local-subtitle">Generate More Leads for Your <?php echo $business['singular']; ?> in Brisbane</p>
                 <div class="local-trust-badges">
                     <span>✓ Home Services Specialists</span>
                     <span>✓ Proven Results</span>
@@ -843,8 +833,8 @@ switch ($page_data['template']) {
         <!-- The Problem - Brain Audit Step 1 -->
         <section class="local-problem">
             <div class="container">
-                <h2>Marketing Challenges for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h2>
-                <p>Running a <?php echo strtolower($industry); ?> business in <?php echo $suburb_name; ?> means dealing with:</p>
+                <h2>Marketing Challenges for <?php echo $business_name; ?> in Brisbane</h2>
+                <p>Running a <?php echo strtolower($industry); ?> business in Brisbane means dealing with:</p>
                 <div class="problem-grid">
                     <?php
                     $challenges = array_slice($business['marketing_challenges'], 0, 3);
@@ -869,8 +859,8 @@ switch ($page_data['template']) {
         <!-- The Solution - Brain Audit Step 2 -->
         <section class="local-solution">
             <div class="container">
-                <h2>How <?php echo $mkt_service_name; ?> Helps <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h2>
-                <p><?php echo $mkt_service['description']; ?>. Perfect for <?php echo strtolower($business_name); ?> in the <?php echo $suburb_name; ?> area.</p>
+                <h2>How <?php echo $mkt_service_name; ?> Helps <?php echo $business_name; ?> in Brisbane</h2>
+                <p><?php echo $mkt_service['description']; ?>. Perfect for <?php echo strtolower($business_name); ?> in Brisbane.</p>
                 <div class="services-grid">
                     <?php foreach (array_slice($mkt_service['benefits'], 0, 4) as $benefit): ?>
                     <div class="service-card">
@@ -890,9 +880,9 @@ switch ($page_data['template']) {
         <section class="local-target">
             <div class="container-narrow">
                 <h2>Is This Right for Your <?php echo $business['singular']; ?>?</h2>
-                <p>Our <?php echo strtolower($mkt_service_name); ?> services in <?php echo $suburb_name; ?> are perfect for:</p>
+                <p>Our <?php echo strtolower($mkt_service_name); ?> services in Brisbane are perfect for:</p>
                 <ul class="target-list">
-                    <li><strong>Established Businesses</strong> - <?php echo ucfirst($business_name); ?> in <?php echo $suburb_name; ?> doing <?php echo $business['annual_revenue_range']; ?> annually</li>
+                    <li><strong>Established Businesses</strong> - <?php echo ucfirst($business_name); ?> in Brisbane doing <?php echo $business['annual_revenue_range']; ?> annually</li>
                     <li><strong>Growth-Focused Owners</strong> - Ready to invest in marketing that generates measurable results</li>
                     <li><strong>Businesses With Capacity</strong> - Can handle more work if you had consistent lead flow</li>
                     <li><strong>Quality Over Price</strong> - Compete on service quality, not just being the cheapest option</li>
@@ -907,7 +897,7 @@ switch ($page_data['template']) {
         <!-- Why Choose Us - Brain Audit Step 5 (Uniqueness) -->
         <section class="local-why">
             <div class="container">
-                <h2>Why <?php echo $business_name; ?> in <?php echo $suburb_name; ?> Work With Us</h2>
+                <h2>Why <?php echo $business_name; ?> in Brisbane Work With Us</h2>
                 <div class="why-grid">
                     <div class="why-item">
                         <h3>Home Services Specialists</h3>
@@ -915,7 +905,7 @@ switch ($page_data['template']) {
                     </div>
                     <div class="why-item">
                         <h3>Local Market Knowledge</h3>
-                        <p>We know the <?php echo $suburb_name; ?> and Brisbane market. We understand local competition, seasonal demand, and how to target customers in your service area.</p>
+                        <p>We know the Brisbane market. We understand local competition, seasonal demand, and how to target customers in your service area.</p>
                     </div>
                     <div class="why-item">
                         <h3>Performance-Based Pricing Options</h3>
@@ -943,8 +933,8 @@ switch ($page_data['template']) {
                 <h2>Common Questions About <?php echo $mkt_service_name; ?> for <?php echo $business_name; ?></h2>
                 <div class="faq-items">
                     <div class="faq-item">
-                        <h3>Do you only work with <?php echo strtolower($business_name); ?> in <?php echo $suburb_name; ?>?</h3>
-                        <p>We work with <?php echo strtolower($business_name); ?> throughout Brisbane, including <?php echo $suburb_name; ?> and surrounding suburbs. We specialize in home services businesses across all trades.</p>
+                        <h3>Do you only work with <?php echo strtolower($business_name); ?> in Brisbane?</h3>
+                        <p>We work with <?php echo strtolower($business_name); ?> throughout Brisbane and surrounding areas. We specialize in home services businesses across all trades.</p>
                     </div>
                     <div class="faq-item">
                         <h3>What size business do you work with?</h3>
@@ -964,7 +954,7 @@ switch ($page_data['template']) {
                     </div>
                     <div class="faq-item">
                         <h3>Do you work with other <?php echo strtolower($industry); ?> businesses?</h3>
-                        <p>Yes! We work with multiple <?php echo strtolower($business_name); ?> in different service areas. We won't work with direct competitors in the same suburbs, but we apply learnings from the industry to benefit all clients.</p>
+                        <p>Yes! We work with multiple <?php echo strtolower($business_name); ?> in different service areas. We won't work with direct competitors in the same area, but we apply learnings from the industry to benefit all clients.</p>
                     </div>
                 </div>
             </div>
@@ -973,7 +963,7 @@ switch ($page_data['template']) {
         <!-- Call to Action - Brain Audit Step 9 -->
         <section class="local-cta" id="contact-form">
             <div class="container-narrow">
-                <h2>Ready to Grow Your <?php echo $business['singular']; ?> in <?php echo $suburb_name; ?>?</h2>
+                <h2>Ready to Grow Your <?php echo $business['singular']; ?> in Brisbane?</h2>
                 <p>Book a free strategy session to discuss how <?php echo strtolower($mkt_service_name); ?> can generate more qualified leads for your business. No pressure, no commitments - just an honest conversation about what's working, what's not, and how we can help.</p>
 
                 <div class="contact-methods">
@@ -1001,16 +991,16 @@ switch ($page_data['template']) {
         <section class="local-area-info">
             <div class="container">
                 <h2><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> Across Brisbane</h2>
-                <p>We help <?php echo strtolower($business_name); ?> in <?php echo $suburb_name; ?> (<?php echo $suburb_postcode; ?>) and throughout Brisbane generate more leads and grow their revenue. Whether you're established in <?php echo $suburb_name; ?> or servicing the broader Brisbane area, we understand the local market and what works for <?php echo strtolower($industry); ?> businesses.</p>
+                <p>We help <?php echo strtolower($business_name); ?> throughout Brisbane generate more leads and grow their revenue. Whether you're servicing the inner city, suburbs, or broader Brisbane area, we understand the local market and what works for <?php echo strtolower($industry); ?> businesses.</p>
 
-                <h3>Other Marketing Services for <?php echo $business_name; ?> in <?php echo $suburb_name; ?></h3>
+                <h3>Other Marketing Services for <?php echo $business_name; ?></h3>
                 <div class="related-services">
                     <?php
-                    // Display other marketing services for this business type in this suburb
+                    // Display other marketing services for this business type
                     $other_services = array_slice($marketing_services_data, 0, 8);
                     foreach ($other_services as $other_svc):
                         if ($other_svc['slug'] !== $mkt_service_slug):
-                            $link_url = '/' . $other_svc['slug'] . '-for-' . $business_slug . '-in-' . $suburb['slug'];
+                            $link_url = '/' . $other_svc['slug'] . '-for-' . $business_slug;
                     ?>
                         <a href="<?php echo $link_url; ?>" class="related-service-link"><?php echo $other_svc['name']; ?> for <?php echo $business_name; ?></a>
                     <?php
@@ -1019,32 +1009,13 @@ switch ($page_data['template']) {
                     ?>
                 </div>
 
-                <h3><?php echo $mkt_service_name; ?> for <?php echo $business_name; ?> in Other Brisbane Suburbs</h3>
+                <h3>Other Home Services Businesses We Help in Brisbane</h3>
                 <div class="nearby-suburbs">
                     <?php
-                    // Display same service for same business in other suburbs
-                    $random_suburbs = array_rand($suburbs_by_slug, min(20, count($suburbs_by_slug)));
-                    if (!is_array($random_suburbs)) $random_suburbs = [$random_suburbs];
-
-                    foreach ($random_suburbs as $idx => $random_suburb_slug):
-                        $random_suburb = $suburbs_by_slug[$random_suburb_slug];
-                        if ($random_suburb['slug'] !== $suburb['slug']):
-                            $link_url = '/' . $mkt_service_slug . '-for-' . $business_slug . '-in-' . $random_suburb['slug'];
-                    ?>
-                        <a href="<?php echo $link_url; ?>" class="suburb-link"><?php echo $random_suburb['name']; ?></a>
-                    <?php
-                        endif;
-                    endforeach;
-                    ?>
-                </div>
-
-                <h3>Other Home Services Businesses We Help in <?php echo $suburb_name; ?></h3>
-                <div class="nearby-suburbs">
-                    <?php
-                    // Display same service for other business types in this suburb
+                    // Display same service for other business types
                     foreach (array_slice($business_types_data, 0, 15) as $other_biz):
                         if ($other_biz['slug'] !== $business_slug):
-                            $link_url = '/' . $mkt_service_slug . '-for-' . $other_biz['slug'] . '-in-' . $suburb['slug'];
+                            $link_url = '/' . $mkt_service_slug . '-for-' . $other_biz['slug'];
                     ?>
                         <a href="<?php echo $link_url; ?>" class="suburb-link"><?php echo $other_biz['name']; ?></a>
                     <?php
