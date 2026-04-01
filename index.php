@@ -966,7 +966,7 @@ switch ($page_data['template']) {
                 <h2>Ready to Grow Your <?php echo $business['singular']; ?> in Brisbane?</h2>
                 <p>Book a free strategy session to discuss how <?php echo strtolower($mkt_service_name); ?> can generate more qualified leads for your business. No pressure, no commitments - just an honest conversation about what's working, what's not, and how we can help.</p>
 
-                <div class="contact-methods">
+                <!-- <div class="contact-methods">
                     <div class="contact-method">
                         <h3>📞 Call Now</h3>
                         <p><a href="tel:1300000000">1300 000 000</a></p>
@@ -977,7 +977,7 @@ switch ($page_data['template']) {
                         <p><a href="mailto:hello@leadstoprofit.com">hello@leadstoprofit.com</a></p>
                         <p class="small">We respond within 24 hours</p>
                     </div>
-                </div>
+                </div> -->
 
                 <div id="cbox-hNPWgg4AnfbXuzSE" style="margin-top: 2rem;"></div>
 
