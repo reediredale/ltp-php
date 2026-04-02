@@ -7,6 +7,9 @@ define('SITE_NAME', 'Leads to Profit');
 $suburbs_data = json_decode(file_get_contents(__DIR__ . '/data/brisbane-suburbs.json'), true);
 $marketing_services_data = json_decode(file_get_contents(__DIR__ . '/data/marketing-services.json'), true);
 $business_types_data = json_decode(file_get_contents(__DIR__ . '/data/business-types.json'), true);
+$service_pillars_data = json_decode(file_get_contents(__DIR__ . '/data/service-pillars.json'), true);
+$industry_pillars_data = json_decode(file_get_contents(__DIR__ . '/data/industry-pillars.json'), true);
+$blog_posts_data = json_decode(file_get_contents(__DIR__ . '/data/blog-posts.json'), true);
 
 // Create lookup arrays for faster access
 $suburbs_by_slug = [];
@@ -22,6 +25,21 @@ foreach ($marketing_services_data as $service) {
 $business_types_by_slug = [];
 foreach ($business_types_data as $business) {
     $business_types_by_slug[$business['slug']] = $business;
+}
+
+$service_pillars_by_slug = [];
+foreach ($service_pillars_data as $pillar) {
+    $service_pillars_by_slug[$pillar['slug']] = $pillar;
+}
+
+$industry_pillars_by_slug = [];
+foreach ($industry_pillars_data as $pillar) {
+    $industry_pillars_by_slug[$pillar['slug']] = $pillar;
+}
+
+$blog_posts_by_slug = [];
+foreach ($blog_posts_data as $post) {
+    $blog_posts_by_slug[$post['slug']] = $post;
 }
 
 // Simple routing for nginx
@@ -99,7 +117,10 @@ if ($request_uri === '/sitemap.xml') {
     }
 
     $total_programmatic = count($marketing_services_data) * count($business_types_data);
-    $total_urls = count($static_urls) + $total_programmatic;
+    $total_service_pillars = count($service_pillars_data);
+    $total_industry_pillars = count($industry_pillars_data);
+    $total_blog_posts = count($blog_posts_data);
+    $total_urls = count($static_urls) + $total_programmatic + $total_service_pillars + $total_industry_pillars + $total_blog_posts;
     $urls_per_sitemap = 50000;
     $num_sitemaps = ceil($total_urls / $urls_per_sitemap);
 
@@ -155,6 +176,36 @@ if (preg_match('/^\/sitemap-(\d+)\.xml$/', $request_uri, $matches)) {
         }
     }
 
+    // Add service pillar pages
+    foreach ($service_pillars_data as $service_pillar) {
+        $url = '/' . $service_pillar['slug'];
+        $all_urls[] = [
+            'loc' => SITE_URL . $url,
+            'changefreq' => 'weekly',
+            'priority' => '0.9'
+        ];
+    }
+
+    // Add industry pillar pages
+    foreach ($industry_pillars_data as $industry_pillar) {
+        $url = '/' . $industry_pillar['slug'];
+        $all_urls[] = [
+            'loc' => SITE_URL . $url,
+            'changefreq' => 'weekly',
+            'priority' => '0.9'
+        ];
+    }
+
+    // Add blog posts
+    foreach ($blog_posts_data as $blog_post) {
+        $url = '/blog/' . $blog_post['slug'];
+        $all_urls[] = [
+            'loc' => SITE_URL . $url,
+            'changefreq' => 'monthly',
+            'priority' => '0.8'
+        ];
+    }
+
     // Output URLs for this sitemap (with pagination)
     $urls_for_this_sitemap = array_slice($all_urls, $offset, $urls_per_sitemap);
 
@@ -198,17 +249,43 @@ if (strpos($uri_path, '-for-') !== false && strpos($uri_path, '-in-') !== false)
     }
 }
 
-// Check for programmatic SEO pages (marketing-service-for-business pattern)
+// Check for programmatic SEO pages and dynamic routes
 $is_local_seo_page = false;
+$is_service_pillar = false;
+$is_industry_pillar = false;
+$is_blog_post = false;
 $marketing_service = null;
 $business_type = null;
+$service_pillar = null;
+$industry_pillar = null;
+$blog_post = null;
 
 if (!isset($routes[$request_uri])) {
-    // Try to match marketing-service-for-business pattern
     $uri_path = trim($request_uri, '/');
 
-    // Check if URL contains "-for-"
-    if (strpos($uri_path, '-for-') !== false) {
+    // Check for blog posts (/blog/post-slug)
+    if (strpos($uri_path, 'blog/') === 0) {
+        $blog_slug = substr($uri_path, 5); // Remove 'blog/' prefix
+        if (isset($blog_posts_by_slug[$blog_slug])) {
+            $is_blog_post = true;
+            $blog_post = $blog_posts_by_slug[$blog_slug];
+        }
+    }
+
+    // Check for service pillar pages (service-slug-brisbane)
+    elseif (isset($service_pillars_by_slug[$uri_path])) {
+        $is_service_pillar = true;
+        $service_pillar = $service_pillars_by_slug[$uri_path];
+    }
+
+    // Check for industry pillar pages (marketing-for-business-brisbane)
+    elseif (isset($industry_pillars_by_slug[$uri_path])) {
+        $is_industry_pillar = true;
+        $industry_pillar = $industry_pillars_by_slug[$uri_path];
+    }
+
+    // Check for service-for-business programmatic pages
+    elseif (strpos($uri_path, '-for-') !== false) {
         // Split by "-for-"
         $for_parts = explode('-for-', $uri_path, 2);
         if (count($for_parts) === 2) {
@@ -227,15 +304,35 @@ if (!isset($routes[$request_uri])) {
     }
 }
 
-// Check if route exists or if it's a local SEO page
+// Set page data based on route type
 if ($is_local_seo_page) {
-    // Create page data for local marketing service page
     $page_data = [
         'title' => $marketing_service['name'] . ' for ' . $business_type['name'] . ' in Brisbane',
         'description' => $marketing_service['name'] . ' services for ' . strtolower($business_type['name']) . ' in Brisbane. ' . $marketing_service['description'] . '. Get qualified leads and grow your business.',
         'template' => 'local-marketing-service',
         'marketing_service' => $marketing_service,
         'business_type' => $business_type
+    ];
+} elseif ($is_service_pillar) {
+    $page_data = [
+        'title' => $service_pillar['title'],
+        'description' => $service_pillar['meta_description'],
+        'template' => 'service-pillar',
+        'service_pillar' => $service_pillar
+    ];
+} elseif ($is_industry_pillar) {
+    $page_data = [
+        'title' => $industry_pillar['title'],
+        'description' => $industry_pillar['meta_description'],
+        'template' => 'industry-pillar',
+        'industry_pillar' => $industry_pillar
+    ];
+} elseif ($is_blog_post) {
+    $page_data = [
+        'title' => $blog_post['title'],
+        'description' => $blog_post['meta_description'],
+        'template' => 'blog-post',
+        'blog_post' => $blog_post
     ];
 } elseif (!isset($routes[$request_uri])) {
     http_response_code(404);

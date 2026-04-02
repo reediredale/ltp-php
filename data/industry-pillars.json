@@ -1,0 +1,121 @@
+[
+  {
+    "slug": "marketing-for-plumbers-brisbane",
+    "business_slug": "plumbers",
+    "title": "Marketing for Plumbers Brisbane | Plumbing Business Marketing Experts",
+    "meta_description": "Complete marketing services for Brisbane plumbers. Lead generation, Google Ads, SEO, and Facebook Ads that fill your calendar with high-paying jobs. Performance-based pricing available.",
+    "h1": "Marketing for Plumbers in Brisbane",
+    "intro": "Stop relying on word-of-mouth and referrals. Get a predictable flow of qualified plumbing jobs every week with multi-channel marketing designed specifically for Brisbane plumbers.",
+    "market_overview": {
+      "total_businesses": "2,800+",
+      "market_size": "$890M annually",
+      "average_job_value": "$350-$2,500",
+      "peak_months": "May-August (winter plumbing issues)",
+      "competition_level": "High"
+    },
+    "marketing_challenges": [
+      {
+        "challenge": "High Competition",
+        "impact": "Brisbane has 2,800+ licensed plumbers competing for the same customers. Standing out requires strategic marketing, not just good work.",
+        "solution": "We help you dominate local search, build brand recognition, and capture customers before they call competitors."
+      },
+      {
+        "challenge": "Emergency vs Scheduled Work Balance",
+        "impact": "Emergency work is urgent but unpredictable. Scheduled renovation work has better margins but longer lead times.",
+        "solution": "Different marketing strategies for each: Google Ads for emergency keywords, Meta Ads and SEO for renovation planning customers."
+      },
+      {
+        "challenge": "Price-Sensitive Customers",
+        "impact": "Many customers shop quotes from 3-5 plumbers, creating downward price pressure.",
+        "solution": "Market your expertise, speed, guarantees, and professionalism to attract customers who value quality over lowest price."
+      },
+      {
+        "challenge": "Seasonal Demand Fluctuations",
+        "impact": "Winter brings hot water and pipe issues. Summer slows down. Revenue swings 40% seasonally.",
+        "solution": "Ramp up marketing in peak season, shift to maintenance and renovation work in off-season."
+      }
+    ],
+    "service_breakdown": {
+      "emergency_plumbing": {
+        "percentage": "40%",
+        "avg_value": "$350-$800",
+        "marketing_strategy": "Google Ads for emergency keywords, 24/7 call availability, fast response messaging"
+      },
+      "blocked_drains": {
+        "percentage": "25%",
+        "avg_value": "$250-$600",
+        "marketing_strategy": "SEO for drain cleaning keywords, educational content about prevention"
+      },
+      "hot_water_systems": {
+        "percentage": "20%",
+        "avg_value": "$1,200-$3,500",
+        "marketing_strategy": "Google Ads for replacement keywords, financing options, energy efficiency messaging"
+      },
+      "bathroom_renovations": {
+        "percentage": "10%",
+        "avg_value": "$3,000-$15,000",
+        "marketing_strategy": "Meta Ads to homeowners planning renovations, portfolio showcasing, design collaboration"
+      },
+      "gas_fitting": {
+        "percentage": "5%",
+        "avg_value": "$400-$1,500",
+        "marketing_strategy": "Target new appliance installations, kitchen renovations, compliance messaging"
+      }
+    },
+    "recommended_services": [
+      {
+        "service": "lead-generation",
+        "why": "Fills calendar with mix of emergency and scheduled work. Best for plumbers ready to scale beyond $1M revenue.",
+        "typical_investment": "$3,000-$8,000/month",
+        "expected_roi": "3:1 to 7:1"
+      },
+      {
+        "service": "google-ads",
+        "why": "Captures high-intent searchers needing plumbing right now. Emergency keywords convert at 5-8%.",
+        "typical_investment": "$2,500-$10,000/month ad spend + management",
+        "expected_roi": "4:1 to 10:1"
+      },
+      {
+        "service": "meta-ads",
+        "why": "Builds brand awareness in your service suburbs. Retargets website visitors. Lower cost per lead than Google.",
+        "typical_investment": "$1,500-$5,000/month ad spend + management",
+        "expected_roi": "2:1 to 6:1"
+      },
+      {
+        "service": "conversion-optimization",
+        "why": "If you're getting clicks but not enough calls, CRO can double your leads with same ad spend.",
+        "typical_investment": "$3,000-$6,000 one-time or $2,000-$4,000/month",
+        "expected_roi": "Payback in 3-5 months"
+      },
+      {
+        "service": "email-marketing",
+        "why": "Past customers need plumbing again. Email generates repeat business and referrals at 10:1+ ROI.",
+        "typical_investment": "$1,000-$2,500/month",
+        "expected_roi": "10:1 to 20:1"
+      }
+    ],
+    "brisbane_specific_insights": "Brisbane's older housing stock (40% of homes pre-1980) creates consistent demand for pipe replacements and reline work. Queenslander homes need specialty plumbing knowledge. Council compliance for backflow prevention creates ongoing commercial work. Summer storms cause burst pipe emergencies.",
+    "revenue_tiers_marketing": {
+      "$500K-$1M": {
+        "focus": "Get consistent lead flow to push through $1M barrier",
+        "recommended_budget": "$2,500-$5,000/month",
+        "channels": "Google Ads for emergency work, basic SEO, email to past customers"
+      },
+      "$1M-$3M": {
+        "focus": "Scale operations, hire additional teams, expand service area",
+        "recommended_budget": "$5,000-$12,000/month",
+        "channels": "Multi-channel: Google Ads + Meta Ads + SEO + Email. Track everything."
+      },
+      "$3M-$5M+": {
+        "focus": "Dominate market share, build brand recognition, maximize profitability per lead",
+        "recommended_budget": "$12,000-$25,000/month",
+        "channels": "Full-funnel strategy with awareness, consideration, and conversion campaigns across all channels"
+      }
+    },
+    "related_blog_posts": [
+      "ultimate-guide-plumber-marketing-2026",
+      "lead-generation-home-services-complete-guide",
+      "google-ads-vs-meta-ads-home-services"
+    ]
+  }
+]
